@@ -4,6 +4,8 @@
 [![Platform: ARM Cortex-M](https://img.shields.io/badge/Platform-ARM%20Cortex--M-blue)](https://www.arm.com/zh-cn/architecture/cpu/m-profile)
 [![Language: C](https://img.shields.io/badge/Language-%20C-blue)]()
 
+![AkieGUI Logo](./assets/AkieGUI_logo.png)
+  
 > [!IMPORTANT]
 > ### 当前阶段和实现的功能？
 > 当前在还未实际上机进行测试的Native阶段，实现了内存管理和显存发送操作。
