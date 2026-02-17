@@ -3,19 +3,17 @@
  * AkieGUI - 嵌入式极简图形库
  * Copyright (C) 2026 雪琳Sherlyn (Xuelin-Sherlyn)
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * 内存管理器实现
+ * 
+ * 实现内存池管理：
+ *   - 首次适应算法
+ *   - 16字节默认对齐
+ *   - 魔数校验防野指针
+ *   - 临界区保护（通过port层）
+ * 
+ * 支持裸机内存池和FreeRTOS堆两种模式
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
+ * 许可证: AGPL v3 (看许可证文件)
  * 联系方式: xuelin-sherlyn@outlook.com
  * B站: https://space.bilibili.com/1815675515
  */
@@ -43,8 +41,14 @@ int AkieGUI_MemInit(void *start, uint32_t size) {
     #endif
     return 0;
 #else
+    uint32_t primask;  /* 保存中断状态 */
     /* 裸机版本：原有初始化代码 */
     if (g_mem_inited) return 0;
+    if (!start || size < sizeof(AkieGUI_Mem_Block_T) + AkieGUI_ALIGN) {
+        return -1;  /* 内存池太小 */
+    }
+
+    AkieGUI_ENTER_CRITICAL(primask);
     
     g_mem.pool_start = (uint8_t*)start;
     g_mem.pool_size = size;
@@ -58,6 +62,7 @@ int AkieGUI_MemInit(void *start, uint32_t size) {
     g_mem.free_list->magic = 0xDEADBEEF;
     
     g_mem_inited = 1;
+    AkieGUI_EXIT_CRITICAL(primask);
     return 0;
 #endif
 }
@@ -65,9 +70,7 @@ int AkieGUI_MemInit(void *start, uint32_t size) {
 void* AkieGUI_MemAlloc(uint32_t size) {
 #if AkieGUI_USE_FREERTOS
     void *ptr;
-    AkieGUI_ENTER_CRITICAL();
     ptr = pvPortMalloc(size);
-    AkieGUI_EXIT_CRITICAL();
     return ptr;
 #else
     return AkieGUI_MemAllocAlign(size, AkieGUI_ALIGN);
@@ -75,9 +78,15 @@ void* AkieGUI_MemAlloc(uint32_t size) {
 }
 
 void* AkieGUI_MemAllocAlign(uint32_t size, uint32_t align) {
+  uint32_t primask;  /* 保存中断状态 */
+
+    if (size == 0) return NULL;
+    if (align == 0 || (align & (align - 1)) != 0) {
+        align = AkieGUI_ALIGN;  /* 回退到默认 */
+    }
 #if AkieGUI_USE_FREERTOS
     void *ptr;
-    AkieGUI_ENTER_CRITICAL();
+    AkieGUI_ENTER_CRITICAL(primask);
     ptr = pvPortMalloc(size + align);
     if (ptr) {
         uintptr_t addr = (uintptr_t)ptr;
@@ -88,13 +97,13 @@ void* AkieGUI_MemAllocAlign(uint32_t size, uint32_t align) {
             ptr = (void*)aligned;
         }
     }
-    AkieGUI_EXIT_CRITICAL();
+    AkieGUI_EXIT_CRITICAL(primask);
     return ptr;
 #else
     if (!g_mem_inited || size == 0) return NULL;
     
     /* ===== 进入临界区！保护链表操作 ===== */
-    AkieGUI_ENTER_CRITICAL();
+    AkieGUI_ENTER_CRITICAL(primask);
     
     size = AkieGUI_ALIGN_UP(size, align);
     uint32_t total_size = size + sizeof(AkieGUI_Mem_Block_T) + align;
@@ -112,7 +121,7 @@ void* AkieGUI_MemAllocAlign(uint32_t size, uint32_t align) {
     }
     
     if (!curr) {
-        AkieGUI_EXIT_CRITICAL();  /* 退出临界区 */
+        AkieGUI_EXIT_CRITICAL(primask);  /* 退出临界区 */
         return NULL;
     }
     
@@ -172,7 +181,7 @@ void* AkieGUI_MemAllocAlign(uint32_t size, uint32_t align) {
     }
     
     /* ===== 退出临界区 ===== */
-    AkieGUI_EXIT_CRITICAL();
+    AkieGUI_EXIT_CRITICAL(primask);
     return result;
 #endif
 }
@@ -185,8 +194,10 @@ void* AkieGUI_MemCalloc(uint32_t nmemb, uint32_t size) {
     return ptr;
 #else
     if (ptr) {
-        uint8_t *p = (uint8_t*)ptr;
-        for (uint32_t i = 0; i < total; i++) p[i] = 0;
+        uint32_t primask;  /* 保存中断状态 */
+        AkieGUI_ENTER_CRITICAL(primask);
+        memset(ptr, 0, total);
+        AkieGUI_EXIT_CRITICAL(primask);
     }
 #endif
     return ptr;
@@ -194,9 +205,10 @@ void* AkieGUI_MemCalloc(uint32_t nmemb, uint32_t size) {
 
 
 void AkieGUI_MemFree(void *ptr) {
+    uint32_t primask;  /* 保存中断状态 */
 #if AkieGUI_USE_FREERTOS
     if (!ptr) return;
-    AkieGUI_ENTER_CRITICAL();
+    AkieGUI_ENTER_CRITICAL(primask);
     
     uintptr_t *p = (uintptr_t*)ptr;
     uintptr_t offset = p[-1];
@@ -206,18 +218,18 @@ void AkieGUI_MemFree(void *ptr) {
     }
     vPortFree((void*)orig);
     
-    AkieGUI_EXIT_CRITICAL();
+    AkieGUI_EXIT_CRITICAL(primask);
 #else
     if (!ptr || !g_mem_inited) return;
     
     /* ===== 进入临界区！保护链表操作 ===== */
-    AkieGUI_ENTER_CRITICAL();
+    AkieGUI_ENTER_CRITICAL(primask);
     
     AkieGUI_Mem_Block_T *block = (AkieGUI_Mem_Block_T*)ptr - 1;
     
     /* 验证魔数 */
     if (block->magic != 0xFEEDBEEF) {
-        AkieGUI_EXIT_CRITICAL();
+        AkieGUI_EXIT_CRITICAL(primask);
         return;
     }
     
@@ -232,20 +244,21 @@ void AkieGUI_MemFree(void *ptr) {
     g_mem.free_list = block;
     
     /* ===== 退出临界区 ===== */
-    AkieGUI_EXIT_CRITICAL();
+    AkieGUI_EXIT_CRITICAL(primask);
 #endif
 }
 
 uint32_t AkieGUI_MemGetFree(void) {
-    uint32_t free_size;
+    uint32_t free_size;/* 空闲大小 */
+    uint32_t primask;  /* 保存中断状态 */
 #if AkieGUI_USE_FREERTOS
-    AkieGUI_ENTER_CRITICAL();
+    AkieGUI_ENTER_CRITICAL(primask);
     free_size = xPortGetFreeHeapSize();
-    AkieGUI_EXIT_CRITICAL();
+    AkieGUI_EXIT_CRITICAL(primask);
 #else
-    AkieGUI_ENTER_CRITICAL();
+    AkieGUI_ENTER_CRITICAL(primask);
     free_size = g_mem.free_size;
-    AkieGUI_EXIT_CRITICAL();
+    AkieGUI_EXIT_CRITICAL(primask);
 #endif
     return free_size;
 }
@@ -258,10 +271,11 @@ uint32_t AkieGUI_MemGetUsed(void) {
         return 0;
     #endif
 #else
+    uint32_t primask;  /* 保存中断状态 */
     uint32_t used_size;
-    AkieGUI_ENTER_CRITICAL();
+    AkieGUI_ENTER_CRITICAL(primask);
     used_size = g_mem.pool_size - g_mem.free_size;
-    AkieGUI_EXIT_CRITICAL();
+    AkieGUI_EXIT_CRITICAL(primask);
     return used_size;
 #endif
 }

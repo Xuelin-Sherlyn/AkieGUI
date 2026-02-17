@@ -4,7 +4,8 @@
 [![Platform: ARM Cortex-M](https://img.shields.io/badge/Platform-ARM%20Cortex--M-blue)](https://www.arm.com/zh-cn/architecture/cpu/m-profile)
 [![Language: C](https://img.shields.io/badge/Language-%20C-blue)]()
 
-![AkieGUI Logo](./assets/AkieGUI_logo.png)
+![AkieGUI Logo](./assets/AkieGUI_Logo.png)
+(Logo由SakuraOfficial使用Akie秋绘的形象元素创作)
   
 > [!IMPORTANT]
 > ### 当前阶段和实现的功能？
@@ -388,6 +389,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 - 完善注释或文档
 
 **注意**：所有贡献的代码也将采用 AGPLv3 协议。
+
+## 🍁 特别致谢
+
+感谢虚拟UP主 [@Akie秋绘](https://space.bilibili.com/4176573) 授权使用其形象元素。
+秋绘的歌声陪伴了无数个debug的深夜，那片红枫叶也成为了这个项目的灵魂。
+
+本项目Logo及启动画面设计均获得官方授权，请勿在其他项目中使用。
 
 ## 📮 联系方式
 - 作者：[雪琳Sherlyn/Xuelin-Sherlyn]

@@ -3,19 +3,16 @@
  * AkieGUI - 嵌入式极简图形库
  * Copyright (C) 2026 雪琳Sherlyn (Xuelin-Sherlyn)
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * 图形核心实现
+ * 
+ * 实现帧缓冲的初始化：
+ *   - 计算缓冲区大小
+ *   - 分配内存（通过memory层）
+ *   - 设置双缓冲/单缓冲模式
+ * 
+ * 其他操作都在头文件中内联实现
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
+ * 许可证: AGPL v3 (看许可证文件)
  * 联系方式: xuelin-sherlyn@outlook.com
  * B站: https://space.bilibili.com/1815675515
  */

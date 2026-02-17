@@ -3,19 +3,16 @@
  * AkieGUI - 嵌入式极简图形库
  * Copyright (C) 2026 雪琳Sherlyn (Xuelin-Sherlyn)
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * 用户配置文件
+ * 
+ * 在这里配置：
+ *   - 屏幕参数（宽/高/色深）
+ *   - 功能开关（FreeRTOS/TE/双缓冲）
+ *   - 硬件布局（内部RAM/外部SDRAM）
+ * 
+ * 所有配置项都提供默认值，用户可自行覆盖
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
+ * 许可证: AGPL v3 (看许可证文件)
  * 联系方式: xuelin-sherlyn@outlook.com
  * B站: https://space.bilibili.com/1815675515
  */
@@ -31,6 +28,11 @@
 
 /* ============= FreeRTOS适配配置 ============= */
 #define AkieGUI_USE_FREERTOS 0         /* 0=裸机内存池, 1=FreeRTOS堆 */
+
+/* FreeRTOS 默认配置 */
+#ifndef AkieGUI_USE_FREERTOS
+#define AkieGUI_USE_FREERTOS 0
+#endif
 
 /* ============= TE模式配置 ============= */
 #define AkieGUI_KE_NO_TE     0        /* 不等待TE，发送完即继续 */
