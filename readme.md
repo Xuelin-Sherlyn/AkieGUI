@@ -4,8 +4,7 @@
 [![Platform: ARM Cortex-M](https://img.shields.io/badge/Platform-ARM%20Cortex--M-blue)](https://www.arm.com/zh-cn/architecture/cpu/m-profile)
 [![Language: C](https://img.shields.io/badge/Language-%20C-blue)]()
 
-![AkieGUI Logo](./assets/AkieGUI_Logo.png)
-(Logo由SakuraOfficial使用Akie秋绘的形象元素创作)
+
   
 > [!IMPORTANT]
 > ### 当前阶段和实现的功能？
