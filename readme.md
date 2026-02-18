@@ -7,8 +7,6 @@
 ![AkieGUI Logo](./assets/AkieGUI_Logo.png)
 (Logo由SakuraOfficial使用Akie秋绘的形象元素创作)
 
-- [AkieGUI:送给各位绘星的嵌入式极简图形库 🍁](#akiegui送给各位绘星的嵌入式极简图形库-)
-  - [AkieGUI 是一个为嵌入式设备设计的**极简、零依赖、高可移植**的图形库。专为资源受限的MCU（STM32/RP2350/ESP32等）打造。](#akiegui-是一个为嵌入式设备设计的极简零依赖高可移植的图形库专为资源受限的mcustm32rp2350esp32等打造)
   - [🎨 原创声明](#-原创声明)
   - [⭐ 为什么叫 AkieGUI？](#-为什么叫-akiegui)
   - [✨ 特性](#-特性)
