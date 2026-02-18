@@ -462,6 +462,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 > - 作者**不对任何损失负责**
 > - 用了出问题是你自己的事
 > 
+> **用了就是同意，不同意就别用。**
+> 
 > ## 🔧 关于 NDA 芯片的使用说明
 > 
 > AkieGUI 采用 AGPLv3 协议，原则上要求所有使用都必须开源。
