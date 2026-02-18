@@ -19,7 +19,6 @@
  */
 #include "akiegui_memory.h"
 #include "stdint.h"
-#include "stm32h7xx.h"
 #include <string.h>
 
 #if !AkieGUI_USE_FREERTOS

@@ -26,6 +26,7 @@
     defined(__ARM_ARCH_8M_MAIN__)
     /* ARM Cortex-M 全系列 */
     #define AkieGUI_ARCH_ARM 1
+    #include "stm32h7xx.h"
     
     /* CMSIS 兼容的内置函数 */
     #define AkieGUI_GET_PRIMASK()      __get_PRIMASK()
