@@ -27,8 +27,16 @@ typedef struct {
 
 AkieGUI_Widget_T* AkieGUI_Button_Create(uint16_t x, uint16_t y, 
                                         uint16_t w, uint16_t h, 
-                                        const char *text);
+                                        const char *text, 
+                                        uint32_t text_color,    /* RGB888 例如 0xFFFFFF */
+                                        uint32_t bg_color,      /* RGB888 例如 0x0000FF */
+                                        uint32_t press_color    /* RGB888 例如 0x000080 */);
 void AkieGUI_Button_SetFont(AkieGUI_Widget_T *btn, pFONT *font);
 void AkieGUI_Button_SetText(AkieGUI_Widget_T *btn, const char *text);
+void AkieGUI_Button_SetColors(AkieGUI_Widget_T *btn,
+                              uint32_t text_color,
+                              uint32_t bg_color,
+                              uint32_t press_color
+);
 
 #endif
