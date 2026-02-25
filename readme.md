@@ -185,6 +185,27 @@ int main(void) {
 | `AkieGUI_MemGetFree()` | 获取空闲内存大小 |
 | `AkieGUI_MemGetUsed()` | 获取已用内存大小 |
 
+## 🧩 控件基类 API
+
+| 函数 | 描述 |
+|------|------|
+| `AkieGUI_Widget_Init()` | 初始化控件系统 |
+| `AkieGUI_Widget_Add(widget)` | 添加控件到管理器 |
+| `AkieGUI_Widget_Remove(widget)` | 从管理器移除控件 |
+| `AkieGUI_Widget_DrawDirtyAll()` | 绘制所有脏控件并提交 |
+| `AkieGUI_Widget_RedrawAll()` | 强制重绘所有控件 |
+| `AkieGUI_Widget_MarkDirty(widget)` | 标记控件需要重绘 |
+| `AkieGUI_Widget_HitTest(x, y)` | 命中测试，返回坐标上的控件 |
+
+## 🎯 已实现的控件 API
+
+| 函数 | 描述 |
+|------|------|
+| `AkieGUI_Button_Create(x, y, w, h, text, text_color, bg_color, press_color)` | 创建按钮（颜色用RGB888）|
+| `AkieGUI_Button_SetFont(btn, font)` | 设置按钮字体（pFONT*）|
+| `AkieGUI_Button_SetText(btn, text)` | 设置按钮文字 |
+| `AkieGUI_Button_SetColors(btn, text_color, bg_color, press_color)` | 设置按钮颜色 |
+
 ## 图形核心 API
 | 函数 | 描述  | 
 |-------------|----------------|
