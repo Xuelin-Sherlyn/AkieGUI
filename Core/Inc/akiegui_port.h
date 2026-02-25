@@ -89,6 +89,7 @@
     #define AkieGUI_EXIT_CRITICAL(primask_save) \
         do { \
             AkieGUI_SET_PRIMASK(primask_save); \
+            AkieGUI_ENABLE_IRQ();\
         } while(0)
 #endif
 
