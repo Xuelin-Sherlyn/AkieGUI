@@ -23,6 +23,8 @@
 #include "akiegui_config.h"
 #include "akiegui_memory.h"
 #include "akiegui_core.h"
+#include "akiegui_widget.h"
+#include "akiegui_button.h"
 
 /* 版本信息 */
 #define AKIEGUI_VERSION_MAJOR    0

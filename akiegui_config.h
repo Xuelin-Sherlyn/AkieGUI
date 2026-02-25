@@ -24,7 +24,7 @@
 /* ============= 显示屏参数配置 ============= */
 #define AkieGUI_LCD_WIDTH   320        /* 显示屏宽度方向像素 */
 #define AkieGUI_LCD_HEIGHT  240        /* 显示屏高度方向像素 */
-#define AkieGUI_LCD_BPP     32         /* 显示屏像素位深 */
+#define AkieGUI_LCD_BPP     16         /* 显示屏像素位深 */
 
 /* ============= FreeRTOS适配配置 ============= */
 #define AkieGUI_USE_FREERTOS 0         /* 0=裸机内存池, 1=FreeRTOS堆 */
