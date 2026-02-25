@@ -35,8 +35,8 @@ typedef struct {
     /* ----- 帧缓冲管理 ----- */
     uint8_t *fb1;          /* 缓冲区1 */
     uint8_t *fb2;          /* 缓冲区2（双缓冲）*/
-    uint8_t *draw_fb;      /* 当前绘制缓冲区 */
-    uint8_t *disp_fb;      /* 当前显示缓冲区 */
+    void *draw_fb;      /* 当前绘制缓冲区 */
+    void *disp_fb;      /* 当前显示缓冲区 */
     uint32_t fb_width;     /* 帧缓冲宽度 */
     uint32_t fb_height;    /* 帧缓冲高度 */
     uint32_t fb_bpp;       /* 每像素位数 */
@@ -117,7 +117,7 @@ int AkieGUI_FBInit(void);
 /**
  * @brief 获取当前绘制缓冲区
  */
-static inline uint8_t* AkieGUI_GetDrawFB(void) {
+static inline void* AkieGUI_GetDrawFB(void) {
     return g_akiegui.draw_fb;
 }
 
