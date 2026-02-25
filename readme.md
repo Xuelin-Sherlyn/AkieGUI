@@ -100,6 +100,15 @@ AkieGUI 的每一行代码都来自实际项目中的痛点：
     | | ├── Src/
     | | | ├── akiegui_core.c
     | | | ├── akiegui_memory.c
+    | ├── Fonts/
+    | | | ├── akiegui_font_ascii.h
+    | | | ├── akiegui_font_ascii.c
+    | ├── Widget/
+    | | | ├── Button/
+    | | | | ├── akiegui_button.h
+    | | | | ├── akiegui_button.c
+    | | | ├── akiegui_widget.h
+    | | | ├── akiegui_widget.c
     │ ├── akiegui_config.h
     │ ├── akiegui.h
     └── main.c
@@ -168,26 +177,51 @@ int main(void) {
 
 | 函数 | 描述 |
 |------|------|
-| AkieGUI_MemInit(pool, size) | 初始化内存池（裸机版）|
-| AkieGUI_MemAlloc(size) | 分配内存（默认16字节对齐）|
-| AkieGUI_MemAllocAlign(size, align) | 分配对齐内存 |
-| AkieGUI_MemCalloc(nmemb, size) | 分配并清零 |
-| AkieGUI_MemFree(ptr) | 释放内存 |
-| AkieGUI_MemGetFree() | 获取空闲内存大小 |
-| AkieGUI_MemGetUsed() | 获取已用内存大小 |
+| `AkieGUI_MemInit(pool, size)` | 初始化内存池（裸机版）|
+| `AkieGUI_MemAlloc(size)` | 分配内存（默认16字节对齐）|
+| `AkieGUI_MemAllocAlign(size, align)` | 分配对齐内存 |
+| `AkieGUI_MemCalloc(nmemb, size)` | 分配并清零 |
+| `AkieGUI_MemFree(ptr)` | 释放内存 |
+| `AkieGUI_MemGetFree()` | 获取空闲内存大小 |
+| `AkieGUI_MemGetUsed()` | 获取已用内存大小 |
 
 ## 图形核心 API
 | 函数 | 描述  | 
 |-------------|----------------|
-|AkieGUI_FBInit() | 初始化帧缓冲 |
-|AkieGUI_GetDrawFB() |	获取当前绘制缓冲区 |
-|AkieGUI_GetDispFB() | 获取当前显示缓冲区 |
-|AkieGUI_SwapBuffer() | 交换双缓冲 |
-|AkieGUI_Commit() | 提交整帧到屏幕 |
-|AkieGUI_CommitRegion(x, y, w, h) | 提交区域到屏幕 (需实现 send_region 驱动) |
-|AkieGUI_SendFrame(data, len) | 发送帧（内部调用） |
-|AkieGUI_WaitTE() | 等待传输完成 |
-|AkieGUI_TransmitEnd() | 必须在中断调用！通知传输完成 |
+| `AkieGUI_FBInit()` | 初始化帧缓冲 |
+| `AkieGUI_GetDrawFB()` |	获取当前绘制缓冲区 |
+| `AkieGUI_GetDispFB()` | 获取当前显示缓冲区 |
+| `AkieGUI_SwapBuffer()` | 交换双缓冲 |
+| `AkieGUI_Commit()` | 提交整帧到屏幕 |
+| `AkieGUI_CommitRegion(x, y, w, h)` | 提交区域到屏幕 (需实现 send_region 驱动) |
+| `AkieGUI_SendFrame(data, len)` | 发送帧（内部调用） |
+| `AkieGUI_WaitTE()` | 等待传输完成 |
+| `AkieGUI_TransmitEnd()` | 必须在中断调用！通知传输完成 |
+
+## 已实现的控件 API
+| 函数 | 描述 |
+|------|------|
+| `AkieGUI_Button_Create(x, y, w, h, text, text_color, bg_color, press_color)` | 创建按钮（颜色用RGB888）|
+| `AkieGUI_Button_SetFont(btn, font)` | 设置按钮字体（pFONT*）|
+| `AkieGUI_Button_SetText(btn, text)` | 设置按钮文字 |
+| `AkieGUI_Button_SetColors(btn, text_color, bg_color, press_color)` | 设置按钮颜色 |
+
+### 控件API示例
+```c
+/* 创建按钮 */
+AkieGUI_Widget_T *btn = AkieGUI_Button_Create(
+    100, 100, 120, 40, "Click",
+    0xFFFFFF,  /* 白字 */
+    0x0000FF,  /* 蓝底 */
+    0x000080   /* 深蓝按下 */
+);
+
+/* 修改文字 */
+AkieGUI_Button_SetText(btn, "Pressed");
+
+/* 换字体 */
+AkieGUI_Button_SetFont(btn, &ASCII_10x20);
+```
 
 ## 🔧 移植指南
 ### 步骤1：实现发送函数
