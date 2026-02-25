@@ -147,6 +147,25 @@ AkieGUI_Widget_T* AkieGUI_Button_Create(
     return btn;
 }
 
+/* 设置按钮字体 */
+void AkieGUI_Button_SetFont(AkieGUI_Widget_T *btn, pFONT *font) {
+    if (!btn || btn->type != AKIEGUI_WIDGET_BUTTON || !font) return;
+    
+    Button_Private *priv = (Button_Private*)btn->priv;
+    priv->font = font;
+    btn->dirty = 1;  /* 标记需要重绘 */
+}
+
+/* 设置按钮文本 */
+void AkieGUI_Button_SetText(AkieGUI_Widget_T *btn, const char *text) {
+    if (!btn || btn->type != AKIEGUI_WIDGET_BUTTON || !text) return;
+    
+    Button_Private *priv = (Button_Private*)btn->priv;
+    strncpy(priv->text, text, sizeof(priv->text) - 1);
+    priv->text[sizeof(priv->text) - 1] = '\0';  /* 确保结尾有\0 */
+    btn->dirty = 1;  /* 标记需要重绘 */
+}
+
 /* 单独设置颜色 */
 void AkieGUI_Button_SetColors(
     AkieGUI_Widget_T *btn,
