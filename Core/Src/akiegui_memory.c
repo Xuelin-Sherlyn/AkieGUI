@@ -26,6 +26,12 @@ static AkieGUI_Mem_T g_mem;
 static uint8_t g_mem_inited = 0;
 #endif
 
+/**
+  * @brief	内存初始化
+  *	@param	start: 起始内存指针
+  * @param  size: 目标内存大小
+  * @retval	成功与否
+*/
 int AkieGUI_MemInit(void *start, uint32_t size) {
     #if AkieGUI_USE_FREERTOS
     /* FreeRTOS 版本：忽略参数，使用FreeRTOS堆 */
@@ -66,6 +72,11 @@ int AkieGUI_MemInit(void *start, uint32_t size) {
 #endif
 }
 
+/**
+  * @brief	内存申请
+  * @param  size: 目标内存大小
+  * @retval	内存地址指针
+*/
 void* AkieGUI_MemAlloc(uint32_t size) {
 #if AkieGUI_USE_FREERTOS
     void *ptr;
@@ -76,6 +87,12 @@ void* AkieGUI_MemAlloc(uint32_t size) {
 #endif
 }
 
+/**
+  * @brief	内存对齐申请
+  * @param  size: 目标内存大小
+  * @param  align: 对齐大小
+  * @retval	内存地址指针
+*/
 void* AkieGUI_MemAllocAlign(uint32_t size, uint32_t align) {
   uint32_t primask;  /* 保存中断状态 */
 
@@ -185,6 +202,12 @@ void* AkieGUI_MemAllocAlign(uint32_t size, uint32_t align) {
 #endif
 }
 
+/**
+  * @brief	内存分配并清零
+  *	@param	nmemb: 目标内存块
+  * @param  size: 目标内存大小
+  * @retval	内存地址指针
+*/
 void* AkieGUI_MemCalloc(uint32_t nmemb, uint32_t size) {
     uint32_t total = nmemb * size;
     void *ptr = AkieGUI_MemAlloc(total);
@@ -202,7 +225,11 @@ void* AkieGUI_MemCalloc(uint32_t nmemb, uint32_t size) {
     return ptr;
 }
 
-
+/**
+  * @brief	内存释放回收
+  *	@param	ptr: 内存地址指针
+  * @retval	内存地址指针
+*/
 void AkieGUI_MemFree(void *ptr) {
     uint32_t primask;  /* 保存中断状态 */
 #if AkieGUI_USE_FREERTOS
@@ -247,6 +274,10 @@ void AkieGUI_MemFree(void *ptr) {
 #endif
 }
 
+/**
+  * @brief	获得内存块空闲大小
+  * @retval	内存空闲大小
+*/
 uint32_t AkieGUI_MemGetFree(void) {
     uint32_t free_size;/* 空闲大小 */
     uint32_t primask;  /* 保存中断状态 */
@@ -262,6 +293,10 @@ uint32_t AkieGUI_MemGetFree(void) {
     return free_size;
 }
 
+/**
+  * @brief	获得内存块使用大小
+  * @retval	内存使用大小
+*/
 uint32_t AkieGUI_MemGetUsed(void) {
 #if AkieGUI_USE_FREERTOS
     #ifdef configTOTAL_HEAP_SIZE

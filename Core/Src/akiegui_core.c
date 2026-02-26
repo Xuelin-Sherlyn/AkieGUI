@@ -44,6 +44,9 @@ AkieGUI_t g_akiegui = {
     .user_data = NULL
 };
 
+/**
+  * @brief	绘制缓冲区初始化
+*/
 int AkieGUI_FBInit() {
     /* 计算帧缓冲大小 */
     uint32_t bytes_per_pixel = AkieGUI_LCD_BPP / 8;

@@ -31,7 +31,15 @@ static inline uint16_t rgb888_to_rgb565(uint32_t rgb) {
     return (r << 11) | (g << 5) | b;
 }
 
-/* 绘制矩形 */
+/**
+  * @brief	矩形绘制
+  *	@param	fb: 绘制缓冲区
+  *	@param	x: 矩形坐标 X
+  *	@param	y: 矩形坐标 Y
+  *	@param	w: 矩形宽度
+  *	@param	h: 矩形高度
+  *	@param	color: 矩形颜色
+*/
 static inline void draw_rect(uint16_t *fb, uint16_t x, uint16_t y, 
                             uint16_t w, uint16_t h, uint16_t color) {
     uint16_t fb_width = g_akiegui.fb_width;
@@ -43,7 +51,16 @@ static inline void draw_rect(uint16_t *fb, uint16_t x, uint16_t y,
     }
 }
 
-/* 绘制字符 */
+/**
+  * @brief	字符绘制
+  *	@param	fb: 绘制缓冲区
+  *	@param	x: 字符坐标 X
+  *	@param	y: 字符坐标 Y
+  * @param  ch: 字符
+  *	@param	color: 字符颜色
+  *	@param	bg_color: 背景颜色
+  * @param  font: 使用的字体
+*/
 static void draw_char(uint16_t *fb, uint16_t x, uint16_t y, char ch,
                      uint16_t color, uint16_t bg_color, pFONT *font) {
     if (!font || !font->pTable || ch < 32 || ch > 126) return;
@@ -68,7 +85,11 @@ static void draw_char(uint16_t *fb, uint16_t x, uint16_t y, char ch,
     }
 }
 
-/* 按钮绘制 */
+/**
+  * @brief	按钮绘制
+  *	@param	btn: 按钮句柄
+  *	@param	fb: 绘制缓冲区
+*/
 static void button_draw(AkieGUI_Widget_T *btn, void *fb) {
     Button_Private *priv = (Button_Private*)btn->priv;
     uint16_t *fb16 = (uint16_t*)fb;
@@ -106,7 +127,18 @@ static void button_draw(AkieGUI_Widget_T *btn, void *fb) {
     btn->dirty = 0;
 }
 
-/* 创建按钮 - 带RGB颜色参数 */
+/**
+  * @brief	按钮创建
+  *	@param	x: 按钮坐标 X
+  *	@param	y: 按钮坐标 Y
+  * @param  w: 按钮宽度
+  * @param  h: 按钮高度
+  *	@param	text: 按钮的文本
+  *	@param	text_color: 按钮文本颜色
+  *	@param	bg_color: 按钮的颜色
+  *	@param	press_color: 按钮按下后的颜色
+  * @retval	AkieGUI_Widget_T实例
+*/
 AkieGUI_Widget_T* AkieGUI_Button_Create(
     uint16_t x, uint16_t y,
     uint16_t w, uint16_t h,
@@ -147,7 +179,11 @@ AkieGUI_Widget_T* AkieGUI_Button_Create(
     return btn;
 }
 
-/* 设置按钮字体 */
+/**
+  * @brief	设置按钮字体
+  *	@param	btn: 按钮句柄
+  *	@param	font: 要使用的字体
+*/
 void AkieGUI_Button_SetFont(AkieGUI_Widget_T *btn, pFONT *font) {
     if (!btn || btn->type != AKIEGUI_WIDGET_BUTTON || !font) return;
     
