@@ -25,6 +25,7 @@
 #include "akiegui_core.h"
 #include "akiegui_widget.h"
 #include "akiegui_button.h"
+#include "akiegui_label.h"
 
 /* 版本信息 */
 #define AKIEGUI_VERSION_MAJOR    0

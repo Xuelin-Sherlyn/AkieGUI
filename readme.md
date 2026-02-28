@@ -88,29 +88,46 @@ AkieGUI 的每一行代码都来自实际项目中的痛点：
 | 320x240 RGB565 | +0 | 150KB | 用户分配 |
 | 800x480 RGB565 | +0 | 750KB | 用户分配 |
 
+**总占用**：核心库 + 公共组件 + 字库 ≈ **55KB Flash**
+
 ## 🚀 快速开始
 
 ### 1. 复制文件到你的工程
+
     your_project/
-    ├── AkieGUI/
-    | ├── Core/
-    | | ├── Inc/
-    | | | ├── akiegui_core.h
-    | | | ├── akiegui_memory.h
-    | | ├── Src/
-    | | | ├── akiegui_core.c
-    | | | ├── akiegui_memory.c
-    | ├── Fonts/
-    | | | ├── akiegui_font_ascii.h
-    | | | ├── akiegui_font_ascii.c
-    | ├── Widget/
-    | | | ├── Button/
-    | | | | ├── akiegui_button.h
-    | | | | ├── akiegui_button.c
-    | | | ├── akiegui_widget.h
-    | | | ├── akiegui_widget.c
-    │ ├── akiegui_config.h
-    │ ├── akiegui.h
+    ├──AkieGUI/
+    |   ├── Core/                      # 核心层
+    |   │   ├── Inc/
+    |   │   │   ├── akiegui_core.h
+    |   │   │   └── akiegui_memory.h
+    |   │   └── Src/
+    |   │       ├── akiegui_core.c
+    |   │       └── akiegui_memory.c
+    |   │
+    |   ├── Common/                    # 公共组件（新增！）
+    |   │   ├── Inc/
+    |   │   │   ├── akiegui_port.h     # 移植层
+    |   │   │   ├── akiegui_color.h    # 颜色转换
+    |   │   │   └── akiegui_draw.h     # 绘制函数
+    |   │   └── Src/
+    |   │       └── akiegui_draw.c
+    |   │
+    |   ├── Widget/                    # 控件层
+    |   │   ├── Inc/
+    |   │   │   ├── akiegui_widget.h
+    |   │   │   ├── akiegui_button.h
+    |   │   │   └── akiegui_label.h
+    |   │   └── Src/
+    |   │       ├── akiegui_widget.c
+    |   │       ├── akiegui_button.c
+    |   │       └── akiegui_label.c
+    |   │
+    |   ├── Fonts/                      # 字库
+    |   │   ├── akiegui_font_ascii.h
+    |   │   └── akiegui_font_ascii.c
+    |   │
+    |   ├── akiegui_config.h
+    |   └── akiegui.h
     └── main.c
 
 ### 2. 配置 `akiegui_config.h`
@@ -185,6 +202,30 @@ int main(void) {
 | `AkieGUI_MemGetFree()` | 获取空闲内存大小 |
 | `AkieGUI_MemGetUsed()` | 获取已用内存大小 |
 
+#### 颜色工具 (akiegui_color.h)
+| 函数 | 描述 |
+|------|------|
+| `akiegui_rgb888_to_native(rgb)` | RGB888 → 本地颜色格式（自动适配 BPP）|
+| `akiegui_native_to_rgb888(color)` | 本地颜色 → RGB888 |
+| `akiegui_color_t` | 根据 BPP 自动适配的颜色类型 |
+
+预定义颜色（RGB888格式）：
+```c
+AKIEGUI_RED      0xFF0000
+AKIEGUI_GREEN    0x00FF00
+AKIEGUI_BLUE     0x0000FF
+AKIEGUI_WHITE    0xFFFFFF
+AKIEGUI_BLACK    0x000000
+```
+
+#### 绘制函数 (akiegui_draw.h)
+| 函数 | 描述 |
+|------|------|
+| `akiegui_draw_rect(fb, x, y, w, h, color)` | 绘制矩形 |
+| `akiegui_draw_char(fb, x, y, ch, color, bg, transparent, font)` | 绘制单个字符 |
+| `akiegui_draw_string(fb, x, y, str, color, bg, transparent, font)` | 绘制字符串 |
+| `akiegui_text_width(str, font)` | 计算字符串宽度 |
+
 ## 🧩 控件基类 API
 
 | 函数 | 描述 |
@@ -220,28 +261,38 @@ int main(void) {
 | `AkieGUI_TransmitEnd()` | 必须在中断调用！通知传输完成 |
 
 ## 已实现的控件 API
-| 函数 | 描述 |
-|------|------|
-| `AkieGUI_Button_Create(x, y, w, h, text, text_color, bg_color, press_color)` | 创建按钮（颜色用RGB888）|
-| `AkieGUI_Button_SetFont(btn, font)` | 设置按钮字体（pFONT*）|
-| `AkieGUI_Button_SetText(btn, text)` | 设置按钮文字 |
-| `AkieGUI_Button_SetColors(btn, text_color, bg_color, press_color)` | 设置按钮颜色 |
+| 控件 | 函数 | 描述 |
+|------|------|------|
+| **按钮** | `AkieGUI_Button_Create(x, y, w, h, text, text_color, bg_color, press_color)` | 创建按钮 |
+| | `AkieGUI_Button_SetFont(btn, font)` | 设置按钮字体 |
+| | `AkieGUI_Button_SetText(btn, text)` | 设置按钮文字 |
+| | `AkieGUI_Button_SetColors(btn, text_color, bg_color, press_color)` | 设置按钮颜色 |
+| **标签** | `AkieGUI_Label_Create(x, y, text, text_color, bg_color, font)` | 创建标签 |
+| | `AkieGUI_Label_SetText(label, text)` | 设置标签文字 |
+| | `AkieGUI_Label_SetColor(label, text_color)` | 设置标签颜色 |
+| | `AkieGUI_Label_SetBgColor(label, bg_color)` | 设置标签背景色（0xFFFF00=透明）|
 
 ### 控件API示例
 ```c
 /* 创建按钮 */
 AkieGUI_Widget_T *btn = AkieGUI_Button_Create(
     100, 100, 120, 40, "Click",
-    0xFFFFFF,  /* 白字 */
-    0x0000FF,  /* 蓝底 */
-    0x000080   /* 深蓝按下 */
+    AKIEGUI_WHITE,     /* 白字 */
+    AKIEGUI_BLUE,      /* 蓝底 */
+    0x000080           /* 深蓝按下 */
 );
 
-/* 修改文字 */
-AkieGUI_Button_SetText(btn, "Pressed");
+/* 创建标签 */
+AkieGUI_Widget_T *label = AkieGUI_Label_Create(
+    10, 10, "Hello",
+    AKIEGUI_RED,       /* 红字 */
+    AKIEGUI_TRANSPARENT, /* 透明背景 */
+    &ASCII_8x16
+);
 
-/* 换字体 */
-AkieGUI_Button_SetFont(btn, &ASCII_10x20);
+/* 添加到管理器 */
+AkieGUI_Widget_Add(btn);
+AkieGUI_Widget_Add(label);
 ```
 
 ## 🔧 移植指南
