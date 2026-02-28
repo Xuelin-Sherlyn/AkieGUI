@@ -106,7 +106,11 @@ static inline void AkieGUI_WaitTE(void) {
 
 /**
  * @brief 初始化帧缓冲
- * @retval 0成功 -1失败
+ * @param width     屏幕宽度
+ * @param height    屏幕高度
+ * @param bpp       每像素位数(16/24/32)
+ * @param double_buf 是否使用双缓冲
+ * @return 0成功 -1失败
  */
 int AkieGUI_FBInit(void);
 
@@ -119,9 +123,8 @@ static inline void* AkieGUI_GetDrawFB(void) {
 
 /**
  * @brief 获取当前显示缓冲区
- * @retval 内存指针
  */
-static inline void* AkieGUI_GetDispFB(void) {
+static inline uint8_t* AkieGUI_GetDispFB(void) {
     return g_akiegui.disp_fb;
 }
 
@@ -130,7 +133,7 @@ static inline void* AkieGUI_GetDispFB(void) {
  */
 static inline void AkieGUI_SwapBuffer(void) {
     if (g_akiegui.double_buffer) {
-        void *tmp = g_akiegui.draw_fb;
+        uint8_t *tmp = g_akiegui.draw_fb;
         g_akiegui.draw_fb = g_akiegui.disp_fb;
         g_akiegui.disp_fb = tmp;
     }
@@ -146,11 +149,6 @@ static inline int AkieGUI_Commit(void) {
 
 /**
  * @brief 提交区域到屏幕
- *	@param	x: 区域坐标 X
-  *	@param	y: 区域坐标 Y
-  * @param  w: 区域宽度
-  * @param  h: 区域高度
-  * @retval 是否成功
  */
 static inline int AkieGUI_CommitRegion(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
     /* 参数检查 */
