@@ -124,7 +124,7 @@ static inline void* AkieGUI_GetDrawFB(void) {
 /**
  * @brief 获取当前显示缓冲区
  */
-static inline uint8_t* AkieGUI_GetDispFB(void) {
+static inline void* AkieGUI_GetDispFB(void) {
     return g_akiegui.disp_fb;
 }
 
@@ -133,7 +133,7 @@ static inline uint8_t* AkieGUI_GetDispFB(void) {
  */
 static inline void AkieGUI_SwapBuffer(void) {
     if (g_akiegui.double_buffer) {
-        uint8_t *tmp = g_akiegui.draw_fb;
+        void *tmp = g_akiegui.draw_fb;
         g_akiegui.draw_fb = g_akiegui.disp_fb;
         g_akiegui.disp_fb = tmp;
     }
