@@ -16,18 +16,35 @@
 #include <stdint.h>
 
 /* ===== 根据 BPP 选择颜色转换 ===== */
-
 #if AkieGUI_LCD_BPP == 16
+typedef uint16_t akiegui_color_t;
+#elif AkieGUI_LCD_BPP == 24
+typedef uint32_t akiegui_color_t;
+#elif AkieGUI_LCD_BPP == 32
+typedef uint32_t akiegui_color_t;
+#else
+typedef uint32_t akiegui_color_t;
+#endif
+
 /* RGB888 转 RGB565 */
 static inline uint16_t akiegui_rgb888_to_native(uint32_t rgb) {
+#if AkieGUI_LCD_BPP == 16
     uint16_t r = (rgb >> 19) & 0x1F;
     uint16_t g = (rgb >> 10) & 0x3F;
     uint16_t b = (rgb >> 3) & 0x1F;
     return (r << 11) | (g << 5) | b;
+#elif AkieGUI_LCD_BPP == 24
+    return rgb & 0x00FFFFFF;
+#elif AkieGUI_LCD_BPP == 32
+    return 0xFF000000 | (rgb & 0x00FFFFFF);
+#else
+#error "AkieGUI_LCD_BPP must be 16, 24, or 32"
+#endif
 }
 
 /* 本地颜色转 RGB888 */
 static inline uint32_t akiegui_native_to_rgb888(uint16_t color) {
+#if AkieGUI_LCD_BPP == 16
     uint8_t r = (color >> 11) & 0x1F;
     uint8_t g = (color >> 5) & 0x3F;
     uint8_t b = color & 0x1F;
@@ -37,38 +54,14 @@ static inline uint32_t akiegui_native_to_rgb888(uint16_t color) {
     b = (b << 3) | (b >> 2);
     
     return (r << 16) | (g << 8) | b;
-}
-
-/* 本地颜色类型 */
-typedef uint16_t akiegui_color_t;
-
 #elif AkieGUI_LCD_BPP == 24
-/* RGB888 直接就是本地格式 */
-static inline uint32_t akiegui_rgb888_to_native(uint32_t rgb) {
-    return rgb & 0x00FFFFFF;
-}
-
-static inline uint32_t akiegui_native_to_rgb888(uint32_t color) {
     return color & 0x00FFFFFF;
-}
-
-typedef uint32_t akiegui_color_t;
-
 #elif AkieGUI_LCD_BPP == 32
-/* ARGB8888 格式（A 固定为 0xFF）*/
-static inline uint32_t akiegui_rgb888_to_native(uint32_t rgb) {
-    return 0xFF000000 | (rgb & 0x00FFFFFF);
-}
-
-static inline uint32_t akiegui_native_to_rgb888(uint32_t color) {
     return color & 0x00FFFFFF;
-}
-
-typedef uint32_t akiegui_color_t;
-
 #else
 #error "AkieGUI_LCD_BPP must be 16, 24, or 32"
 #endif
+}
 
 /* 预定义颜色（RGB888 格式）*/
 #define AKIEGUI_RED     0xFFFF0000
