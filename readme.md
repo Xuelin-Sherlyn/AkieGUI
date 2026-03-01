@@ -104,7 +104,7 @@ AkieGUI 的每一行代码都来自实际项目中的痛点：
     |   │       ├── akiegui_core.c
     |   │       └── akiegui_memory.c
     |   │
-    |   ├── Common/                    # 公共组件（新增！）
+    |   ├── Common/                    # 公共组件
     |   │   ├── Inc/
     |   │   │   ├── akiegui_port.h     # 移植层
     |   │   │   ├── akiegui_color.h    # 颜色转换
@@ -113,15 +113,15 @@ AkieGUI 的每一行代码都来自实际项目中的痛点：
     |   │       └── akiegui_draw.c
     |   │
     |   ├── Widget/                    # 控件层
-    |   │   ├── Inc/
-    |   │   │   ├── akiegui_widget.h
+    |   │   ├── akiegui_widget.h
+    |   │   ├── akiegui_widget.c
+    |   │   ├── Button/
     |   │   │   ├── akiegui_button.h
-    |   │   │   └── akiegui_label.h
-    |   │   └── Src/
-    |   │       ├── akiegui_widget.c
-    |   │       ├── akiegui_button.c
+    |   │   │   └── akiegui_button.c
+    |   │   └── Label/
+    |   │       ├── akiegui_label.h
     |   │       └── akiegui_label.c
-    |   │
+    |   │    
     |   ├── Fonts/                      # 字库
     |   │   ├── akiegui_font_ascii.h
     |   │   └── akiegui_font_ascii.c
