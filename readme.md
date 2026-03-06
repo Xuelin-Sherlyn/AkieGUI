@@ -118,6 +118,9 @@ AkieGUI 的每一行代码都来自实际项目中的痛点：
     |   │   ├── Button/
     |   │   │   ├── akiegui_button.h
     |   │   │   └── akiegui_button.c
+    |   │   └── Image/
+    |   │   │   ├── akiegui_image.h
+    |   │   │   └── akiegui_image.c
     |   │   └── Label/
     |   │       ├── akiegui_label.h
     |   │       └── akiegui_label.c
