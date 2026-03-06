@@ -271,6 +271,19 @@ AKIEGUI_BLACK    0x000000
 | | `AkieGUI_Label_SetText(label, text)` | 设置标签文字 |
 | | `AkieGUI_Label_SetColor(label, text_color)` | 设置标签颜色 |
 | | `AkieGUI_Label_SetBgColor(label, bg_color)` | 设置标签背景色（0xFFFF00=透明）|
+| **图片** | `AkieGUI_Image_Create(x, y, w, h, img_info)` | 创建图片控件 |
+| | `AkieGUI_Image_SetData(img, img_info)` | 更新图片数据 |
+
+### 图片格式
+```c
+/* 图片信息结构体 - 数据格式固定为 RGB888 */
+typedef struct {
+    uint16_t width;             /* 图片宽度（像素）*/
+    uint16_t height;            /* 图片高度（像素）*/
+    const void* data;        /* RGB888 数据指针 */
+    uint32_t data_size;         /* 数据大小（字节）*/
+} AkieGUI_Image_Info_T;
+```
 
 ### 控件API示例
 ```c
@@ -290,9 +303,33 @@ AkieGUI_Widget_T *label = AkieGUI_Label_Create(
     &ASCII_8x16
 );
 
+/* 创建图片控件 */
+
+/* 定义一张 100x100 的 RGB888 图片 */
+const uint8_t my_image[] = {
+    0xFF, 0x00, 0x00,  /* 第一个像素：红 */
+    0x00, 0xFF, 0x00,  /* 第二个像素：绿 */
+    0x00, 0x00, 0xFF,  /* 第三个像素：蓝 */
+    // ... 更多像素
+};
+
+AkieGUI_Image_Info_T img_info = {
+    .width = 100,
+    .height = 100,
+    .data = my_image,
+    .data_size = sizeof(my_image)
+};
+
+/* 创建图片控件（显示在 120x120 区域，自动缩放）*/
+AkieGUI_Widget_T *img = AkieGUI_Image_Create(10, 10, 120, 120, &img_info);
+
 /* 添加到管理器 */
 AkieGUI_Widget_Add(btn);
 AkieGUI_Widget_Add(label);
+AkieGUI_Widget_Add(img);
+
+/* 更新图片内容 */
+AkieGUI_Image_SetData(img, &new_img_info);
 ```
 
 ## 🔧 移植指南

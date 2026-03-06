@@ -19,6 +19,7 @@ typedef enum {
     AKIEGUI_WIDGET_NONE = 0,
     AKIEGUI_WIDGET_BUTTON,
     AKIEGUI_WIDGET_LABEL,
+    AKIEGUI_WIDGET_IMAGE,
 } AkieGUI_Widget_Type;
 
 /* 控件状态 */

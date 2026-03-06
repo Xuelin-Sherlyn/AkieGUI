@@ -70,6 +70,7 @@ static void label_draw(AkieGUI_Widget_T *label, void *fb) {
   *	@param	text_color: 标签文本颜色
   *	@param	bg_color: 标签的背景颜色
   *	@param	font: 要使用的字体
+  * @retval	AkieGUI_Widget_T实例
 */
 AkieGUI_Widget_T* AkieGUI_Label_Create(
     uint16_t x, uint16_t y,
