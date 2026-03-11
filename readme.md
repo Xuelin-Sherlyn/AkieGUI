@@ -236,6 +236,8 @@ AKIEGUI_BLACK    0x000000
 | `AkieGUI_Widget_Init()` | 初始化控件系统 |
 | `AkieGUI_Widget_Add(widget)` | 添加控件到管理器 |
 | `AkieGUI_Widget_Remove(widget)` | 从管理器移除控件 |
+| `AkieGUI_Widget_RemoveAll()` | 移除所有控件 |
+| `AkieGUI_Widget_Remove(widget)` | 从管理器移除控件 |
 | `AkieGUI_Widget_DrawDirtyAll()` | 绘制所有脏控件并提交 |
 | `AkieGUI_Widget_RedrawAll()` | 强制重绘所有控件 |
 | `AkieGUI_Widget_MarkDirty(widget)` | 标记控件需要重绘 |

@@ -37,6 +37,44 @@ void AkieGUI_Widget_Add(AkieGUI_Widget_T *widget) {
 }
 
 /**
+  * @brief	从管理器移除控件
+  * @param	widget: 要移除的控件指针
+  * @retval	无
+  */
+void AkieGUI_Widget_Remove(AkieGUI_Widget_T *widget) {
+    if (!widget) return;
+    
+    for (uint8_t i = 0; i < g_widget_list.count; i++) {
+        if (g_widget_list.widgets[i] == widget) {
+            /* 把最后一个控件移过来填补空缺 */
+            g_widget_list.widgets[i] = g_widget_list.widgets[g_widget_list.count - 1];
+            g_widget_list.count--;
+            
+            /* 标记控件不可见（但不释放内存）*/
+            widget->state &= ~AKIEGUI_STATE_VISIBLE;
+            widget->dirty = 0;
+            return;
+        }
+    }
+}
+
+/**
+  * @brief	从管理器移除所有控件
+  * @param	无
+  * @retval	无
+  */
+void AkieGUI_Widget_RemoveAll(void) {
+    for (uint8_t i = 0; i < g_widget_list.count; i++) {
+        AkieGUI_Widget_T *widget = g_widget_list.widgets[i];
+        if (widget) {
+            widget->state &= ~AKIEGUI_STATE_VISIBLE;
+            widget->dirty = 0;
+        }
+    }
+    g_widget_list.count = 0;
+}
+
+/**
   * @brief	标记脏矩形
   *	@param	widget: widget句柄
 */
