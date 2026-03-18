@@ -45,9 +45,10 @@ AkieGUI_t g_akiegui = {
 };
 
 /**
-  * @brief	绘制缓冲区初始化
-*/
-int AkieGUI_FBInit() {
+ * @brief 初始化帧缓冲
+ * @retval 0成功 -1失败
+ */
+int AkieGUI_FBInit(void) {
     /* 计算帧缓冲大小 */
     uint32_t bytes_per_pixel = AkieGUI_LCD_BPP / 8;
     if (bytes_per_pixel == 0) bytes_per_pixel = 2;  /* 默认RGB565 */

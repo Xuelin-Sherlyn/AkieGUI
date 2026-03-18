@@ -106,11 +106,7 @@ static inline void AkieGUI_WaitTE(void) {
 
 /**
  * @brief 初始化帧缓冲
- * @param width     屏幕宽度
- * @param height    屏幕高度
- * @param bpp       每像素位数(16/24/32)
- * @param double_buf 是否使用双缓冲
- * @return 0成功 -1失败
+ * @retval 0成功 -1失败
  */
 int AkieGUI_FBInit(void);
 
