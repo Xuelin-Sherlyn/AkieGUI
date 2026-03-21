@@ -335,6 +335,9 @@ AkieGUI_Widget_Add(img);
 
 /* 更新图片内容 */
 AkieGUI_Image_SetData(img, &new_img_info);
+
+/* 移除图片控件 */
+AkieGUI_Widget_Remove(img);
 ```
 
 ## 🔧 移植指南

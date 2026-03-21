@@ -33,7 +33,7 @@ static uint8_t g_mem_inited = 0;
   * @retval	成功与否
 */
 int AkieGUI_MemInit(void *start, uint32_t size) {
-    #if AkieGUI_USE_FREERTOS
+#if AkieGUI_USE_FREERTOS
     /* FreeRTOS 版本：忽略参数，使用FreeRTOS堆 */
     (void)start;
     (void)size;
