@@ -157,6 +157,7 @@ AkieGUI 的每一行代码都来自实际项目中的痛点：
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) {
     if (hspi == &hspi6) {
         AkieGUI_TransmitEnd();  /* 通知图形库传输完成 */
+        AkieGUI_SwapBuffer();   /* 双缓冲交换 */
     }
 }
 
@@ -184,7 +185,6 @@ int main(void) {
 #if AKIEGUI_TE_MODE == AkieGUI_KE_TE_EN
     AkieGUI_WaitTE();  /* 等待发送完成 */
 #endif
-    AkieGUI_SwapBuffer(); /* 双缓冲交换 */
     
     while(1) {
         /* 你的应用代码 */
