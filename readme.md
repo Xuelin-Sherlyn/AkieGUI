@@ -441,7 +441,7 @@ void task_touch(void *arg) {
 >     SCB_CleanInvalidateDCache();
 >     /* 配置DMA2D寄存器（直接操作寄存器，无HAL开销）*/
 >     DMA2D->CR = 0x00000000UL | (1 << 9);                            /* 内存到内存模式 */
->     DMA2D->FGMAR = (uint32_t)data;                                  /* 源地址（LVGL绘制缓冲区）*/
+>     DMA2D->FGMAR = (uint32_t)data;                                  /* 源地址（AkieGUI绘制缓冲区）*/
 >     DMA2D->OMAR = AkieGUI_MEM_ADDR;                                 /* 目标地址（LTDC显存）*/
 >     DMA2D->FGOR = 0;                                                /* 源行偏移 */
 >     DMA2D->OOR = 0;                                                 /* 目标行偏移 */
