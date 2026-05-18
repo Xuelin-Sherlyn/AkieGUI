@@ -28,6 +28,7 @@
 #include "akiegui_button.h"
 #include "akiegui_image.h"
 #include "akiegui_label.h"
+#include "akiegui_progress.h"
 
 /* 版本信息 */
 #define AKIEGUI_VERSION_MAJOR    0

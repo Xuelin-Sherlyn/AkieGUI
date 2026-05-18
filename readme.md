@@ -122,8 +122,11 @@ AkieGUI 的每一行代码都来自实际项目中的痛点：
     |   │   │   ├── akiegui_image.h
     |   │   │   └── akiegui_image.c
     |   │   └── Label/
-    |   │       ├── akiegui_label.h
-    |   │       └── akiegui_label.c
+    |   │   │   ├── akiegui_label.h
+    |   │   │   └── akiegui_image.c
+    |   │   └── Progress/
+    |   │       ├── akiegui_progress.h
+    |   │       └── akiegui_progress.c
     |   │    
     |   ├── Fonts/                      # 字库
     |   │   ├── akiegui_font_ascii.h
@@ -278,6 +281,10 @@ AKIEGUI_BLACK    0x000000
 | | `AkieGUI_Label_SetBgColor(label, bg_color)` | 设置标签背景色（0xFFFF00=透明）|
 | **图片** | `AkieGUI_Image_Create(x, y, w, h, img_info)` | 创建图片控件 |
 | | `AkieGUI_Image_SetData(img, img_info)` | 更新图片数据 |
+| **进度条** | `AkieGUI_Progress_Create(x, y, w, h, max, bg_color, bar_color)` | 创建进度条 |
+| | `AkieGUI_Progress_SetValue(progress, value)` | 设置进度条当前值 |
+| | `AkieGUI_Progress_SetMax(progress, max)` | 设置进度条最大值 |
+| | `AkieGUI_Progress_ShowPercent(progress, enable, font, text_cplor)` | 设置标签背景色（0xFFFF00=透明）|
 
 ### 图片格式
 ```c
@@ -328,10 +335,24 @@ AkieGUI_Image_Info_T img_info = {
 /* 创建图片控件（显示在 120x120 区域，自动缩放）*/
 AkieGUI_Widget_T *img = AkieGUI_Image_Create(10, 10, 120, 120, &img_info);
 
+/* 创建进度条控件 */
+AkieGUI_Widget_T *progress = AkieGUI_Progress_Create(
+    10, 200, 135, 20,
+    100,
+    AKIEGUI_GRAY,  // 背景
+    AKIEGUI_GREEN   // 进度条
+);
+
+// 更新进度
+AkieGUI_Progress_SetValue(progress, 35);
+// 显示进度条文本
+AkieGUI_Progress_ShowPercent(progress, 1, &ASCII_10x20, AKIEGUI_WHITE);
+
 /* 添加到管理器 */
 AkieGUI_Widget_Add(btn);
 AkieGUI_Widget_Add(label);
 AkieGUI_Widget_Add(img);
+AkieGUI_Widget_Add(progress);
 
 /* 更新图片内容 */
 AkieGUI_Image_SetData(img, &new_img_info);
