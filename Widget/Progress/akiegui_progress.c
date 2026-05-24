@@ -12,6 +12,7 @@
 #include "akiegui_progress.h"
 #include "akiegui_color.h"
 #include "akiegui_draw.h"
+#include <stdint.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -120,6 +121,14 @@ void AkieGUI_Progress_SetMax(AkieGUI_Widget_T *widget, uint16_t max) {
     if (max == 0) return;
     priv->max = max;
     if (priv->value > max) priv->value = max;
+    widget->dirty = 1;
+}
+
+void AkieGUI_Progress_SetColor(AkieGUI_Widget_T *widget, uint32_t bar_color) {
+    if (!widget || widget->type != AKIEGUI_WIDGET_PROGRESS) return;
+    Progress_Private *priv = (Progress_Private*)widget->priv;
+    if (priv->bar_color == bar_color) return;
+    priv->bar_color = bar_color;
     widget->dirty = 1;
 }
 

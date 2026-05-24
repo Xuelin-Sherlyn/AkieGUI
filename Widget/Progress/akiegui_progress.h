@@ -38,6 +38,7 @@ AkieGUI_Widget_T* AkieGUI_Progress_Create(
 
 void AkieGUI_Progress_SetValue(AkieGUI_Widget_T *widget, uint16_t value);
 void AkieGUI_Progress_SetMax(AkieGUI_Widget_T *widget, uint16_t max);
+void AkieGUI_Progress_SetColor(AkieGUI_Widget_T *widget, uint32_t bar_color);
 void AkieGUI_Progress_ShowPercent(AkieGUI_Widget_T *widget,
                                   uint8_t enable,
                                   pFONT *font,
