@@ -441,77 +441,67 @@ void task_touch(void *arg) {
     }
 }
 ```
+### 场景5：LTDC + DMA2D（RGB接口高速屏）
+```c
+ static volatile uint8_t dma2d_busy = 0;
 
-> [!NOTE]
-> ## 以下代码逻辑已写完，但作者人在外地暂无法实测
-> 如果你手头有 RGB 屏幕（STM32H7/F7 系列 + LTDC），欢迎帮忙验证。
-> 遇到问题可以提 Issue，附上调试信息，咱们一起修。
-> 
-> 代码放这里不是为了坑人，是为了：
-> 1. 给有同样需求的人一个参考
-> 2. 等 PR 或者作者回去拿屏幕配硬件来完善它
-> ### 场景5：LTDC + DMA2D（RGB接口高速屏）
-> ```c
-> static volatile uint8_t dma2d_busy = 0;
->
-> /* STM32H7/F7 系列，800x480 ARGB8888，DMA2D加速 */
-> void my_send_frame(uint8_t *data, uint32_t len) {
->     (void)len;
->     /* 清理无效的数据缓存 */
->     /* 如果MCU有D-Cache，需要做Cache维护。如果无Cache，可注释掉 */
->     SCB_CleanInvalidateDCache();
->     /* 配置DMA2D寄存器（直接操作寄存器，无HAL开销）*/
->     DMA2D->CR = 0x00000000UL | (1 << 9);                            /* 内存到内存模式 */
->     DMA2D->FGMAR = (uint32_t)data;                                  /* 源地址（AkieGUI绘制缓冲区）*/
->     DMA2D->OMAR = AkieGUI_MEM_ADDR;                                 /* 目标地址（LTDC显存）*/
->     DMA2D->FGOR = 0;                                                /* 源行偏移 */
->     DMA2D->OOR = 0;                                                 /* 目标行偏移 */
->     DMA2D->FGPFCCR = DMA2D_OUTPUT_ARGB8888;                         /* 32位颜色格式 */
->     DMA2D->OPFCCR = DMA2D_OUTPUT_ARGB8888;
->     DMA2D->NLR = (AkieGUI_LCD_WIDTH << 16) | AkieGUI_LCD_HEIGHT;    /* 行列数 */
->     DMA2D->CR |= DMA2D_IT_TC;                                       /* 开启传输完成中断 */
->     DMA2D->CR |= DMA2D_CR_START;                                    /* 启动传输 */
->     
->     dma2d_busy = 1;
-> }
-> 
-> /* 请注册一个或使用现有的DMA2D传输完成回调函数 */
-> void mDMA2DCpltCallback(DMA2D_HandleTypeDef *hdma2d) {
->     if (hdma2d->Instance==DMA2D)
->     {
->         if(dma2d_busy == 1)
->         {
->             AkieGUI_TransmitEnd();                                  /* 通知传输完成 */
->             dma2d_busy = 0;
->         }
->     }
-> }
-> ```
-> 
-> ### 场景6：LTDC + 双缓冲 + TE（零撕裂）
-> ```c
-> /* send_frame 函数*/
-> void my_send_frame(uint8_t *data, uint32_t len) {
->     (void)len;
->     LTDC_Layer1->CFBAR = (uint32_t)data;			// 切换显存地址
-> }
-> 
-> /* 利用LTDC的行事件中断切换显存地址 */
-> void HAL_LTDC_LineEventCallback(LTDC_HandleTypeDef *hltdc) {
->     __HAL_LTDC_RELOAD_CONFIG(hltdc);
->     HAL_LTDC_ProgramLineEvent(hltdc, 0);
->     AkieGUI_TransmitEnd();      /* 通知图形库 */
-> }
-> ```
-> 这两种遇到问题也别慌~可以插点断点排查
->
-> 提 Issue 时请附上：
-> - MCU 型号
-> - 屏幕规格（分辨率/接口）
-> - 调试输出（如果有）
-> 
-> 写出这些信息可以让 Issue 质量更高，也方便开发者复现调试
+ /* STM32H7/F7 系列，800x480 ARGB8888，DMA2D加速 */
+ void my_send_frame(uint8_t *data, uint32_t len) {
+     (void)len;
+     /* 清理无效的数据缓存 */
+     /* 如果MCU有D-Cache，需要做Cache维护。如果无Cache，可注释掉 */
+     SCB_CleanInvalidateDCache();
+     /* 配置DMA2D寄存器（直接操作寄存器，无HAL开销）*/
+     DMA2D->CR = 0x00000000UL | (1 << 9);                            /* 内存到内存模式 */
+     DMA2D->FGMAR = (uint32_t)data;                                  /* 源地址（AkieGUI绘制缓冲区）*/
+     DMA2D->OMAR = AkieGUI_MEM_ADDR;                                 /* 目标地址（LTDC显存）*/
+     DMA2D->FGOR = 0;                                                /* 源行偏移 */
+     DMA2D->OOR = 0;                                                 /* 目标行偏移 */
+     DMA2D->FGPFCCR = DMA2D_OUTPUT_ARGB8888;                         /* 32位颜色格式 */
+     DMA2D->OPFCCR = DMA2D_OUTPUT_ARGB8888;
+     DMA2D->NLR = (AkieGUI_LCD_WIDTH << 16) | AkieGUI_LCD_HEIGHT;    /* 行列数 */
+     DMA2D->CR |= DMA2D_IT_TC;                                       /* 开启传输完成中断 */
+     DMA2D->CR |= DMA2D_CR_START;                                    /* 启动传输 */
+     
+     dma2d_busy = 1;
+ }
+ 
+ /* 请注册一个或使用现有的DMA2D传输完成回调函数 */
+ void mDMA2DCpltCallback(DMA2D_HandleTypeDef *hdma2d) {
+     if (hdma2d->Instance==DMA2D)
+     {
+         if(dma2d_busy == 1)
+         {
+             AkieGUI_TransmitEnd();                                  /* 通知传输完成 */
+             dma2d_busy = 0;
+         }
+     }
+ }
+ ```
+ 
+ ### 场景6：LTDC + 双缓冲 + TE（零撕裂）
+ ```c
+ /* send_frame 函数*/
+ void my_send_frame(uint8_t *data, uint32_t len) {
+     (void)len;
+     LTDC_Layer1->CFBAR = (uint32_t)data;			// 切换显存地址
+ }
+ 
+ /* 利用LTDC的行事件中断切换显存地址 */
+ void HAL_LTDC_LineEventCallback(LTDC_HandleTypeDef *hltdc) {
+     __HAL_LTDC_RELOAD_CONFIG(hltdc);
+     HAL_LTDC_ProgramLineEvent(hltdc, 0);
+     AkieGUI_TransmitEnd();      /* 通知图形库 */
+ }
+ ```
+ 这两种遇到问题也别慌~可以插点断点排查
 
+ 提 Issue 时请附上：
+ - MCU 型号
+ - 屏幕规格（分辨率/接口）
+ - 调试输出（如果有）
+ 
+ 写出这些信息可以让 Issue 质量更高，也方便开发者复现调试
 ## 📈 性能优化建议
 1. **使用双缓冲** + `AkieGUI_SwapBuffer()` - 彻底消除撕裂
 
