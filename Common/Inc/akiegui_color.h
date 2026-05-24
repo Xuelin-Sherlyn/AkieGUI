@@ -18,16 +18,14 @@
 /* ===== 根据 BPP 选择颜色转换 ===== */
 #if AkieGUI_LCD_BPP == 16
 typedef uint16_t akiegui_color_t;
-#elif AkieGUI_LCD_BPP == 24
-typedef uint32_t akiegui_color_t;
-#elif AkieGUI_LCD_BPP == 32
+#elif AkieGUI_LCD_BPP == 24 || AkieGUI_LCD_BPP == 32
 typedef uint32_t akiegui_color_t;
 #else
 typedef uint32_t akiegui_color_t;
 #endif
 
 /* RGB888 转 RGB565 */
-static inline uint16_t akiegui_rgb888_to_native(uint32_t rgb) {
+static inline akiegui_color_t akiegui_rgb888_to_native(uint32_t rgb) {
 #if AkieGUI_LCD_BPP == 16
     uint16_t r = (rgb >> 19) & 0x1F;
     uint16_t g = (rgb >> 10) & 0x3F;

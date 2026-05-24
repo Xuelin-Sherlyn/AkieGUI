@@ -96,7 +96,7 @@ AkieGUI_Widget_T* AkieGUI_Button_Create(
     
     if (text) strncpy(priv->text, text, sizeof(priv->text) - 1);
     
-    /* 转换RGB888 → RGB565 */
+    /* 颜色转换 */
     priv->text_color = akiegui_rgb888_to_native(text_color);
     priv->bg_color = akiegui_rgb888_to_native(bg_color);
     priv->press_color = akiegui_rgb888_to_native(press_color);
@@ -108,7 +108,7 @@ AkieGUI_Widget_T* AkieGUI_Button_Create(
     btn->w = w;
     btn->h = h;
     btn->state = AKIEGUI_STATE_VISIBLE | AKIEGUI_STATE_ENABLED;
-    btn->border_color = akiegui_rgb888_to_native(0x000000);
+    btn->border_color = akiegui_rgb888_to_native(0xFF000000);
     btn->border_width = 1;
     btn->dirty = 1;
     btn->draw = button_draw;

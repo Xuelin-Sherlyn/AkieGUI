@@ -12,6 +12,7 @@
 #ifndef __AKIEGUI_BUTTON_H__
 #define __AKIEGUI_BUTTON_H__
 
+#include "akiegui_color.h"
 #include "akiegui_widget.h"
 #include "akiegui_font_ascii.h"
 #include <string.h>
@@ -19,9 +20,9 @@
 /* 按钮数据 */
 typedef struct {
     char text[32];
-    uint16_t text_color;     /* 文字颜色 */
-    uint16_t bg_color;       /* 背景色 */
-    uint16_t press_color;    /* 按下颜色 */
+    akiegui_color_t text_color;     /* 文字颜色 */
+    akiegui_color_t bg_color;       /* 背景色 */
+    akiegui_color_t press_color;    /* 按下颜色 */
     pFONT *font;             /* 字体指针 - 直接用你的pFONT */
 } Button_Private;
 

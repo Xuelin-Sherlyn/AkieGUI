@@ -18,9 +18,9 @@
 typedef struct {
     uint16_t value;
     uint16_t max;
-    uint16_t bar_color;   /* RGB565 */
-    uint16_t bg_color;    /* RGB565 */
-    uint16_t border_color;
+    akiegui_color_t bar_color;
+    akiegui_color_t bg_color;
+    akiegui_color_t border_color;
     uint8_t border_width;
 
     uint8_t show_percent;

@@ -13,6 +13,7 @@
 #define __AKIEGUI_WIDGET_H__
 
 #include "akiegui_core.h"
+#include "akiegui_color.h"
 
 /* 控件类型 */
 typedef enum {
@@ -36,10 +37,10 @@ typedef struct AkieGUI_Widget {
     uint16_t w, h;
     uint8_t state;
     
-    /* 颜色（RGB565，直接存）*/
-    uint16_t forg_color;
-    uint16_t back_color;
-    uint16_t border_color;
+    /* 颜色 */
+    akiegui_color_t forg_color;
+    akiegui_color_t back_color;
+    akiegui_color_t border_color;
     uint8_t border_width;
     
     /* 字体（指向你的 pFONT）*/
