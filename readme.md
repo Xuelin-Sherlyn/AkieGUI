@@ -284,7 +284,8 @@ AKIEGUI_BLACK    0x000000
 | **进度条** | `AkieGUI_Progress_Create(x, y, w, h, max, bg_color, bar_color)` | 创建进度条 |
 | | `AkieGUI_Progress_SetValue(progress, value)` | 设置进度条当前值 |
 | | `AkieGUI_Progress_SetMax(progress, max)` | 设置进度条最大值 |
-| | `AkieGUI_Progress_ShowPercent(progress, enable, font, text_cplor)` | 设置标签背景色（0xFFFF00=透明）|
+| | `AkieGUI_Progress_ShowPercent(progress, enable, font, text_color)` | 显示进度条数值文本 |
+| | `void AkieGUI_Progress_SetColor(progress, color)` | 设置进度条颜色 |
 
 ### 图片格式
 ```c
