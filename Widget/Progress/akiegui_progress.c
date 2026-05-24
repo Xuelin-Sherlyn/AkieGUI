@@ -61,7 +61,7 @@ static void progress_draw(AkieGUI_Widget_T *widget, void *fb) {
         akiegui_draw_string(fb, tx, ty, buf,
                             priv->text_color,
                             priv->bg_color,
-                            0,
+                            1,
                             priv->font);
     }
 
