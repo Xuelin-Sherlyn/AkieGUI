@@ -19,7 +19,9 @@
 #ifndef __AKIEGUI_CONFIG_H__
 #define __AKIEGUI_CONFIG_H__
 
-#include <stdint.h>
+/*======== 把外置配置的头文件在这引用 ========*/
+
+/*==========================================*/
 
 /* ============= 显示屏参数配置 ============= */
 #define AkieGUI_LCD_WIDTH   320        /* 显示屏宽度方向像素 */
