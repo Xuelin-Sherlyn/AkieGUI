@@ -1,5 +1,5 @@
 #include "akiegui_font_ascii.h"
-#include <stdint.h>
+#include "akiegui_font.h"
 
 /**
   * @brief  ASCII字库, 8*16字体
@@ -979,6 +979,7 @@ pFONT ASCII_8x16 = {
   16,
   16,
   0,
+  FONT_TYPE_ASCII
 };
 
 pFONT ASCII_9x18 = {
@@ -987,6 +988,7 @@ pFONT ASCII_9x18 = {
   18,
   36,
   0,
+  FONT_TYPE_ASCII
 };
 
 pFONT ASCII_10x20 = {
@@ -995,4 +997,5 @@ pFONT ASCII_10x20 = {
   20,
   40,
   0,
+  FONT_TYPE_ASCII
 };

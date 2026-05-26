@@ -35,6 +35,17 @@ void akiegui_draw_char(
     pFONT *font
 );
 
+/* 绘制中文字符 */
+void akiegui_draw_chinese_char(
+    void *fb,
+    uint16_t x, uint16_t y,
+    const char *ch,
+    akiegui_color_t color,
+    akiegui_color_t bg_color,
+    uint8_t transparent,
+    pFONT *font
+);
+
 /* 绘制字符串 */
 void akiegui_draw_string(
     void *fb,
@@ -44,6 +55,18 @@ void akiegui_draw_string(
     akiegui_color_t bg_color,
     uint8_t transparent,
     pFONT *font
+);
+
+/* 绘制中文字符串 */
+void akiegui_draw_chinese_string(
+    void *fb,
+    uint16_t x, uint16_t y,
+    const char *str,
+    akiegui_color_t color,
+    akiegui_color_t bg_color,
+    uint8_t transparent,
+    pFONT *chinese_font,
+    pFONT *ascii_font
 );
 
 /* 计算字符串宽度 */

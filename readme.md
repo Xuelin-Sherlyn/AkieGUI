@@ -106,9 +106,10 @@ AkieGUI 的每一行代码都来自实际项目中的痛点：
     |   │
     |   ├── Common/                    # 公共组件
     |   │   ├── Inc/
-    |   │   │   ├── akiegui_port.h     # 移植层
     |   │   │   ├── akiegui_color.h    # 颜色转换
-    |   │   │   └── akiegui_draw.h     # 绘制函数
+    |   │   │   ├── akiegui_draw.h     # 绘制函数
+    |   │   │   ├── akiegui_font.h     # 字体支持
+    |   │   │   └── akiegui_port.h     # 移植层
     |   │   └── Src/
     |   │       └── akiegui_draw.c
     |   │
@@ -129,8 +130,10 @@ AkieGUI 的每一行代码都来自实际项目中的痛点：
     |   │       └── akiegui_progress.c
     |   │    
     |   ├── Fonts/                      # 字库
+    |   │   ├── akiegui_font_ascii.c
     |   │   ├── akiegui_font_ascii.h
-    |   │   └── akiegui_font_ascii.c
+    |   │   ├── akiegui_font_chinese.c
+    |   │   └── akiegui_font_chinese.h
     |   │
     |   ├── akiegui_config.h
     |   └── akiegui.h
@@ -229,7 +232,9 @@ AKIEGUI_BLACK    0x000000
 |------|------|
 | `akiegui_draw_rect(fb, x, y, w, h, color)` | 绘制矩形 |
 | `akiegui_draw_char(fb, x, y, ch, color, bg, transparent, font)` | 绘制单个字符 |
+| `akiegui_draw_chinese_char(fb, x, y, ch, color, bg, transparent, font)` | 绘制单个中文字符 |
 | `akiegui_draw_string(fb, x, y, str, color, bg, transparent, font)` | 绘制字符串 |
+| `akiegui_draw_chinese_string(fb, x, y, str, color, bg, transparent, font)` | 绘制中文字符串 |
 | `akiegui_text_width(str, font)` | 计算字符串宽度 |
 
 ## 🧩 控件基类 API
@@ -276,7 +281,9 @@ AKIEGUI_BLACK    0x000000
 | | `AkieGUI_Button_SetText(btn, text)` | 设置按钮文字 |
 | | `AkieGUI_Button_SetColors(btn, text_color, bg_color, press_color)` | 设置按钮颜色 |
 | **标签** | `AkieGUI_Label_Create(x, y, text, text_color, bg_color, font)` | 创建标签 |
+| | `AkieGUI_Label_Create(x, y, text, text_color, bg_color, ascii_font, chinese_font)` | 创建标签(中文) |
 | | `AkieGUI_Label_SetText(label, text)` | 设置标签文字 |
+| | `AkieGUI_Label_SetText_Chinese(label, text)` | 设置标签文字(中文) |
 | | `AkieGUI_Label_SetColor(label, text_color)` | 设置标签颜色 |
 | | `AkieGUI_Label_SetBgColor(label, bg_color)` | 设置标签背景色（0xFFFF00=透明）|
 | **图片** | `AkieGUI_Image_Create(x, y, w, h, img_info)` | 创建图片控件 |

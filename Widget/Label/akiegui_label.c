@@ -10,10 +10,7 @@
  * B站: https://space.bilibili.com/1815675515
  */
 #include "akiegui_label.h"
-#include "akiegui_color.h"
 #include "akiegui_draw.h"
-#include "akiegui_widget.h"
-#include <string.h>
 
 #define MAX_LABELS 10
 
@@ -22,7 +19,8 @@ typedef struct {
     char text[64];               /* 文字内容 */
     akiegui_color_t text_color;  /* 文本颜色 */
     akiegui_color_t bg_color;    /* 背景颜色 */
-    pFONT *font;                 /* 文本字体 */
+    pFONT* ascii_font;           /* ASCII文本字体 */
+    pFONT* chinese_font;         /* 中文文本字体 */
     uint8_t transparent;         /* 1=背景透明，只画文字 */
 } Label_Private;
 
@@ -48,17 +46,41 @@ static void label_draw(AkieGUI_Widget_T *label, void *fb) {
     }
     
     /* 画文字 - 居中 */
-    if (priv->text[0] != '\0' && priv->font) {
-        uint16_t text_w = akiegui_text_width(priv->text, priv->font);
-        uint16_t text_h = priv->font->Height;
+    if (priv->text[0] != '\0' && priv->ascii_font) {
+        uint16_t text_w = akiegui_text_width(priv->text, priv->ascii_font);
+        uint16_t text_h = priv->ascii_font->Height;
         uint16_t start_x = label->x + (label->w - text_w) / 2;
         uint16_t start_y = label->y + (label->h - text_h) / 2;
-        
+
         akiegui_draw_string(fb, start_x, start_y, priv->text,
-                           priv->text_color, priv->bg_color, 
-                           priv->transparent, priv->font);
+                       priv->text_color, priv->bg_color, 
+                       priv->transparent, priv->ascii_font);
     }
     
+    label->dirty = 0;
+}
+
+/**
+  * @brief  中英文混合标签绘制（GB2312 + ASCII）
+  *	@param	lable: 标签句柄
+  *	@param	fb: 绘制缓冲区
+  */
+static void label_draw_mixed(AkieGUI_Widget_T* label, void *fb) {
+    Label_Private *priv = (Label_Private*)label->priv;
+
+    /* 如果不透明，先画背景 */
+    if (!priv->transparent) {
+        akiegui_draw_rect(fb, label->x, label->y, label->w, label->h, priv->bg_color);
+    }
+    const char* str = priv->text;
+    uint16_t tx = label->x + (label->w - strlen(priv->text) * priv->chinese_font->Width) / 2;
+    uint16_t ty = label->y + (label->h - priv->chinese_font->Height) / 2;
+
+    akiegui_draw_chinese_string(fb, tx, ty, str, 
+        priv->text_color, priv->bg_color, 
+        priv->transparent, priv->chinese_font, 
+        priv->ascii_font);
+
     label->dirty = 0;
 }
 
@@ -97,7 +119,7 @@ AkieGUI_Widget_T* AkieGUI_Label_Create(
     /* 颜色转换 */
     priv->text_color = akiegui_rgb888_to_native(text_color);
     priv->bg_color = akiegui_rgb888_to_native(bg_color);
-    priv->font = font;
+    priv->ascii_font = font;
     priv->transparent = (bg_color == 0xFFFF00);  /* 0xFFFF00 作为透明色标记 */
     
     label->type = AKIEGUI_WIDGET_LABEL;
@@ -108,6 +130,61 @@ AkieGUI_Widget_T* AkieGUI_Label_Create(
     label->state = AKIEGUI_STATE_VISIBLE | AKIEGUI_STATE_ENABLED;
     label->dirty = 1;
     label->draw = label_draw;
+    label->priv = priv;
+    
+    g_label_count++;
+    return label;
+}
+
+/**
+  * @brief	创建中文标签
+  *	@param	x: 标签X坐标
+  *	@param	y: 标签Y坐标
+  * @param  text: 标签文本
+  *	@param	text_color: 标签文本颜色
+  *	@param	bg_color: 标签的背景颜色
+  * @param  ascii_font: 要使用的英文字体
+  *	@param	ch_font: 要使用的中文字体
+  * @retval	AkieGUI_Widget_T实例
+*/
+AkieGUI_Widget_T* AkieGUI_Label_Create_Chinese(
+    uint16_t x, uint16_t y,
+    const char *text,
+    uint32_t text_color,
+    uint32_t bg_color,
+    pFONT *ascii_font,
+    pFONT *ch_font
+) {
+    if (g_label_count >= MAX_LABELS) return NULL;
+    
+    AkieGUI_Widget_T *label = &g_labels[g_label_count].label;
+    Label_Private *priv = &g_labels[g_label_count].priv;
+    
+    memset(label, 0, sizeof(AkieGUI_Widget_T));
+    memset(priv, 0, sizeof(Label_Private));
+    
+    if (text) strncpy(priv->text, text, sizeof(priv->text) - 1);
+    
+    /* 计算标签尺寸（根据文字长度）*/
+    // uint16_t text_len = text ? strlen(text) : 0;
+    uint16_t width = akiegui_text_width(text, ch_font) + 4;  /* 左右留2像素边 */
+    uint16_t height = ch_font->Height + 4;           /* 上下留2像素边 */
+    
+    /* 颜色转换 */
+    priv->text_color = akiegui_rgb888_to_native(text_color);
+    priv->bg_color = akiegui_rgb888_to_native(bg_color);
+    priv->ascii_font = ascii_font;
+    priv->chinese_font = ch_font;
+    priv->transparent = (bg_color == 0xFFFF00);  /* 0xFFFF00 作为透明色标记 */
+    
+    label->type = AKIEGUI_WIDGET_LABEL;
+    label->x = x;
+    label->y = y;
+    label->w = width;
+    label->h = height;
+    label->state = AKIEGUI_STATE_VISIBLE | AKIEGUI_STATE_ENABLED;
+    label->dirty = 1;
+    label->draw = label_draw_mixed;
     label->priv = priv;
     
     g_label_count++;
@@ -128,7 +205,26 @@ void AkieGUI_Label_SetText(AkieGUI_Widget_T *label, const char *text) {
     
     /* 重新计算宽度（如果需要自动调整）*/
     uint16_t text_len = strlen(text);
-    label->w = text_len * priv->font->Width + 4;
+    label->w = text_len * priv->ascii_font->Width + 4;
+    
+    label->dirty = 1;
+}
+
+/**
+  * @brief	设置标签文字
+  * @param  lable: 标签句柄
+  * @param  text: 标签文本
+*/
+void AkieGUI_Label_SetText_Chinese(AkieGUI_Widget_T *label, const char *text) {
+    if (!label || label->type != AKIEGUI_WIDGET_LABEL || !text) return;
+    
+    Label_Private *priv = (Label_Private*)label->priv;
+    strncpy(priv->text, text, sizeof(priv->text) - 1);
+    priv->text[sizeof(priv->text) - 1] = '\0';
+    
+    /* 重新计算宽度（如果需要自动调整）*/
+    uint16_t text_len = strlen(text);
+    label->w = text_len * priv->chinese_font->Width + 4;
     
     label->dirty = 1;
 }

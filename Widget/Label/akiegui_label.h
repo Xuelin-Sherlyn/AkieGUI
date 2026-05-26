@@ -12,8 +12,9 @@
 #ifndef __AKIEGUI_LABEL_H__
 #define __AKIEGUI_LABEL_H__
 
+#include "akiegui.h"
+#include "akiegui_font.h"
 #include "akiegui_widget.h"
-#include "akiegui_font_ascii.h"
 
 /* 创建标签 */
 AkieGUI_Widget_T* AkieGUI_Label_Create(
@@ -24,8 +25,21 @@ AkieGUI_Widget_T* AkieGUI_Label_Create(
     pFONT *font
 );
 
+/* 创建中文标签 */
+AkieGUI_Widget_T* AkieGUI_Label_Create_Chinese(
+    uint16_t x, uint16_t y,
+    const char *text,
+    uint32_t text_color,
+    uint32_t bg_color,
+    pFONT *ascii_font,
+    pFONT *ch_font
+);
+
 /* 设置标签文字 */
 void AkieGUI_Label_SetText(AkieGUI_Widget_T *label, const char *text);
+
+/* 设置标签文字(中文) */
+void AkieGUI_Label_SetText_Chinese(AkieGUI_Widget_T *label, const char *text);
 
 /* 设置标签颜色 */
 void AkieGUI_Label_SetColor(AkieGUI_Widget_T *label, uint32_t text_color);
