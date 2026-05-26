@@ -10,7 +10,6 @@
  * B站: https://space.bilibili.com/1815675515
  */
 #include "akiegui_draw.h"
-#include "usart.h"
 #include <string.h>
 
 /**
