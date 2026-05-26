@@ -16,9 +16,11 @@
  * 联系方式: xuelin-sherlyn@outlook.com
  * B站: https://space.bilibili.com/1815675515
  */
+#include "akiegui.h"
 #include "akiegui_core.h"
 #include "akiegui_config.h"
 #include "akiegui_memory.h"
+#include "akiegui_touch.h"
 #include "stdint.h"
 #include "stddef.h"
 
@@ -43,6 +45,8 @@ AkieGUI_t g_akiegui = {
     .screen_bpp = 0,
     .user_data = NULL
 };
+
+static AkieGUI_Widget_T *g_touch_down_widget = NULL;
 
 /**
  * @brief 初始化帧缓冲
@@ -86,4 +90,37 @@ int AkieGUI_FBInit(void) {
     g_akiegui.screen_bpp = AkieGUI_LCD_BPP;
     
     return 0;
+}
+
+void AkieGUI_ProcessTouch(void) {
+    uint16_t x, y;
+    uint8_t pressed;
+    static uint8_t last_pressed = 0;
+
+    akiegui_touch_read(&x, &y, &pressed);
+
+    if (pressed && !last_pressed) {
+        // 按下：记录命中的控件
+        g_touch_down_widget = AkieGUI_Widget_HitTest(x, y);
+        if (g_touch_down_widget) {
+            g_touch_down_widget->state |= AKIEGUI_STATE_PRESSED;
+            AkieGUI_Widget_MarkDirty(g_touch_down_widget);
+            AkieGUI_Widget_RedrawAll();   // 或只刷新脏控件
+        }
+    } else if(!pressed && last_pressed) {
+        // 抬起：触发 click（如果按下和抬起是同一个控件）
+        if (g_touch_down_widget) {
+            AkieGUI_Widget_T *release_widget = AkieGUI_Widget_HitTest(x, y);
+            if (release_widget == g_touch_down_widget && g_touch_down_widget->on_click) {
+                g_touch_down_widget->on_click(g_touch_down_widget);
+            }
+            g_touch_down_widget->state &= ~AKIEGUI_STATE_PRESSED;
+            AkieGUI_Widget_MarkDirty(g_touch_down_widget);
+            AkieGUI_Widget_RedrawAll();
+            g_touch_down_widget = NULL;
+        }
+    }else {
+        return;
+    }
+    last_pressed = pressed;
 }

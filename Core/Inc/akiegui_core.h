@@ -166,4 +166,9 @@ static inline int AkieGUI_CommitRegion(uint16_t x, uint16_t y, uint16_t w, uint1
     return 0;
 }
 
+/**
+ * @brief 触摸处理函数
+ */
+void AkieGUI_ProcessTouch(void);
+
 #endif
