@@ -106,13 +106,16 @@ void AkieGUI_ProcessTouch(void) {
             g_touch_down_widget->state |= AKIEGUI_STATE_PRESSED;
             AkieGUI_Widget_MarkDirty(g_touch_down_widget);
             AkieGUI_Widget_RedrawAll();   // 或只刷新脏控件
+            if(g_touch_down_widget->on_click)
+            {
+                g_touch_down_widget->on_click(g_touch_down_widget);
+            }
         }
     } else if(!pressed && last_pressed) {
         // 抬起：触发 click（如果按下和抬起是同一个控件）
         if (g_touch_down_widget) {
-            AkieGUI_Widget_T *release_widget = AkieGUI_Widget_HitTest(x, y);
-            if (release_widget == g_touch_down_widget && g_touch_down_widget->on_click) {
-                g_touch_down_widget->on_click(g_touch_down_widget);
+            if (g_touch_down_widget->on_release) {
+                g_touch_down_widget->on_release(g_touch_down_widget);
             }
             g_touch_down_widget->state &= ~AKIEGUI_STATE_PRESSED;
             AkieGUI_Widget_MarkDirty(g_touch_down_widget);

@@ -51,6 +51,7 @@ typedef struct AkieGUI_Widget {
     
     /* 回调 */
     void (*on_click)(struct AkieGUI_Widget *self);
+    void (*on_release)(struct AkieGUI_Widget *self);
     void *user_data;
     
     /* 绘制函数 */

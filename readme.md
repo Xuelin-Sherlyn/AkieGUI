@@ -109,9 +109,11 @@ AkieGUI 的每一行代码都来自实际项目中的痛点：
     |   │   │   ├── akiegui_color.h    # 颜色转换
     |   │   │   ├── akiegui_draw.h     # 绘制函数
     |   │   │   ├── akiegui_font.h     # 字体支持
-    |   │   │   └── akiegui_port.h     # 移植层
+    |   │   │   ├── akiegui_port.h     # 移植层
+    |   │   │   └── akiegui_touch.h    # 触摸接口
     |   │   └── Src/
-    |   │       └── akiegui_draw.c
+    |   │       ├── akiegui_draw.c
+    |   │       └── akiegui_touch.c
     |   │
     |   ├── Widget/                    # 控件层
     |   │   ├── akiegui_widget.h
@@ -250,6 +252,7 @@ AKIEGUI_BLACK    0x000000
 | `AkieGUI_Widget_RedrawAll()` | 强制重绘所有控件 |
 | `AkieGUI_Widget_MarkDirty(widget)` | 标记控件需要重绘 |
 | `AkieGUI_Widget_HitTest(x, y)` | 命中测试，返回坐标上的控件 |
+| `AkieGUI_ProcessTouch()` | 触摸处理函数 |
 
 ## 🎯 已实现的控件 API
 
