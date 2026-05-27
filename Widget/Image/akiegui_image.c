@@ -10,6 +10,7 @@
  * B站: https://space.bilibili.com/1815675515
  */
 #include "akiegui_image.h"
+#include "akiegui_color.h"
 #include "akiegui_draw.h"
 #include <string.h>
 
@@ -39,10 +40,10 @@ static uint8_t g_image_count = 0;
   * @param	width: 图片宽度
   * @retval	转换后的本地颜色值
   */
-static inline akiegui_color_t get_pixel_rgb888(const uint8_t *data, uint16_t x, uint16_t y, uint16_t width) {
-    uint32_t idx = (y * width + x) * 3;
-    uint32_t rgb = (data[idx] << 16) | (data[idx + 1] << 8) | data[idx + 2];
-    return akiegui_rgb888_to_native(rgb);
+static inline akiegui_color_t get_pixel(const uint8_t *data, uint16_t x, uint16_t y, uint16_t width) {
+    uint32_t idx = (y * width + x) * 4;
+    uint32_t rgb = (data[idx] << 24) | (data[idx + 1] << 16) | (data[idx + 2] << 8) | data[idx + 3];
+    return akiegui_argb888_to_native(rgb);
 }
 
 /**
@@ -76,7 +77,7 @@ static void draw_image_no_scale(void *fb, AkieGUI_Widget_T *widget, Image_Privat
     uint32_t *fb32 = (uint32_t*)fb;
     for (uint16_t y = 0; y < draw_h; y++) {
         for (uint16_t x = 0; x < draw_w; x++) {
-            akiegui_color_t color = get_pixel_rgb888(info->data, x, y, info->width);
+            akiegui_color_t color = get_pixel(info->data, x, y, info->width);
             uint32_t fb_idx = (start_y + y) * fb_width + (start_x + x);
             fb32[fb_idx] = color;
         }
@@ -123,7 +124,7 @@ static void draw_image_scaled(void *fb, AkieGUI_Widget_T *widget, Image_Private 
             uint16_t src_x = (uint16_t)(x * scale_x);
             if (src_x >= info->width) src_x = info->width - 1;
             
-            akiegui_color_t color = get_pixel_rgb888(info->data, src_x, src_y, info->width);
+            akiegui_color_t color = get_pixel(info->data, src_x, src_y, info->width);
             uint32_t fb_idx = (widget->y + y) * fb_width + (widget->x + x);
             fb32[fb_idx] = color;
         }

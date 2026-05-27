@@ -216,17 +216,17 @@ int main(void) {
 #### 颜色工具 (akiegui_color.h)
 | 函数 | 描述 |
 |------|------|
-| `akiegui_rgb888_to_native(rgb)` | RGB888 → 本地颜色格式（自动适配 BPP）|
-| `akiegui_native_to_rgb888(color)` | 本地颜色 → RGB888 |
+| `akiegui_agb888_to_native(rgb)` | ARGB888 → 本地颜色格式（自动适配 BPP）|
+| `akiegui_native_to_argb888(color)` | 本地颜色 → ARGB888 |
 | `akiegui_color_t` | 根据 BPP 自动适配的颜色类型 |
 
 预定义颜色（RGB888格式）：
 ```c
-AKIEGUI_RED      0xFF0000
-AKIEGUI_GREEN    0x00FF00
-AKIEGUI_BLUE     0x0000FF
-AKIEGUI_WHITE    0xFFFFFF
-AKIEGUI_BLACK    0x000000
+AKIEGUI_RED      0xFFFF0000
+AKIEGUI_GREEN    0xFF00FF00
+AKIEGUI_BLUE     0x0FF000FF
+AKIEGUI_WHITE    0xFFFFFFFF
+AKIEGUI_BLACK    0xFF000000
 ```
 
 #### 绘制函数 (akiegui_draw.h)
@@ -299,11 +299,11 @@ AKIEGUI_BLACK    0x000000
 
 ### 图片格式
 ```c
-/* 图片信息结构体 - 数据格式固定为 RGB888 */
+/* 图片信息结构体 - 数据格式固定为 ARGB8888 */
 typedef struct {
     uint16_t width;             /* 图片宽度（像素）*/
     uint16_t height;            /* 图片高度（像素）*/
-    const void* data;        /* RGB888 数据指针 */
+    const void* data;           /* ARGB8888 数据指针 */
     uint32_t data_size;         /* 数据大小（字节）*/
 } AkieGUI_Image_Info_T;
 ```
@@ -328,11 +328,11 @@ AkieGUI_Widget_T *label = AkieGUI_Label_Create(
 
 /* 创建图片控件 */
 
-/* 定义一张 100x100 的 RGB888 图片 */
+/* 定义一张 100x100 的 ARGB8888 图片 */
 const uint8_t my_image[] = {
-    0xFF, 0x00, 0x00,  /* 第一个像素：红 */
-    0x00, 0xFF, 0x00,  /* 第二个像素：绿 */
-    0x00, 0x00, 0xFF,  /* 第三个像素：蓝 */
+    0xFF, 0xFF, 0x00, 0x00,  /* 第一个像素：红 */
+    0xFF, 0x00, 0xFF, 0x00,  /* 第二个像素：绿 */
+    0xFF, 0x00, 0x00, 0xFF,  /* 第三个像素：蓝 */
     // ... 更多像素
 };
 

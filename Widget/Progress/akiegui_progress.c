@@ -96,9 +96,9 @@ AkieGUI_Widget_T* AkieGUI_Progress_Create(
 
     priv->value = 0;
     priv->max = (max == 0) ? 1 : max;
-    priv->bg_color = akiegui_rgb888_to_native(bg_color);
-    priv->bar_color = akiegui_rgb888_to_native(bar_color);
-    priv->border_color = akiegui_rgb888_to_native(0x000000);
+    priv->bg_color = akiegui_argb888_to_native(bg_color);
+    priv->bar_color = akiegui_argb888_to_native(bar_color);
+    priv->border_color = akiegui_argb888_to_native(0x000000);
     priv->border_width = 1;
     priv->show_percent = 0;
 
@@ -140,6 +140,6 @@ void AkieGUI_Progress_ShowPercent(AkieGUI_Widget_T *widget,
     Progress_Private *priv = (Progress_Private*)widget->priv;
     priv->show_percent = enable;
     priv->font = font;
-    priv->text_color = akiegui_rgb888_to_native(text_color);
+    priv->text_color = akiegui_argb888_to_native(text_color);
     widget->dirty = 1;
 }

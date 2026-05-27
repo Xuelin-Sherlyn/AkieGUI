@@ -117,8 +117,8 @@ AkieGUI_Widget_T* AkieGUI_Label_Create(
     uint16_t height = font->Height + 4;           /* 上下留2像素边 */
     
     /* 颜色转换 */
-    priv->text_color = akiegui_rgb888_to_native(text_color);
-    priv->bg_color = akiegui_rgb888_to_native(bg_color);
+    priv->text_color = akiegui_argb888_to_native(text_color);
+    priv->bg_color = akiegui_argb888_to_native(bg_color);
     priv->ascii_font = font;
     priv->transparent = (bg_color == 0xFFFF00);  /* 0xFFFF00 作为透明色标记 */
     
@@ -171,8 +171,8 @@ AkieGUI_Widget_T* AkieGUI_Label_Create_Chinese(
     uint16_t height = ch_font->Height + 4;           /* 上下留2像素边 */
     
     /* 颜色转换 */
-    priv->text_color = akiegui_rgb888_to_native(text_color);
-    priv->bg_color = akiegui_rgb888_to_native(bg_color);
+    priv->text_color = akiegui_argb888_to_native(text_color);
+    priv->bg_color = akiegui_argb888_to_native(bg_color);
     priv->ascii_font = ascii_font;
     priv->chinese_font = ch_font;
     priv->transparent = (bg_color == 0xFFFF00);  /* 0xFFFF00 作为透明色标记 */
@@ -238,7 +238,7 @@ void AkieGUI_Label_SetColor(AkieGUI_Widget_T *label, uint32_t text_color) {
     if (!label || label->type != AKIEGUI_WIDGET_LABEL) return;
     
     Label_Private *priv = (Label_Private*)label->priv;
-    priv->text_color = akiegui_rgb888_to_native(text_color);
+    priv->text_color = akiegui_argb888_to_native(text_color);
     label->dirty = 1;
 }
 
@@ -251,7 +251,7 @@ void AkieGUI_Label_SetBgColor(AkieGUI_Widget_T *label, uint32_t bg_color) {
     if (!label || label->type != AKIEGUI_WIDGET_LABEL) return;
     
     Label_Private *priv = (Label_Private*)label->priv;
-    priv->bg_color = akiegui_rgb888_to_native(bg_color);
+    priv->bg_color = akiegui_argb888_to_native(bg_color);
     priv->transparent = (bg_color == 0xFFFF00);  /* 0xFFFF00 透明 */
     label->dirty = 1;
 }
