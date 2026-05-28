@@ -88,10 +88,10 @@ AkieGUI_Widget_T* AkieGUI_Button_Create(
 ) {
     if (g_button_count >= MAX_BUTTONS) return NULL;
     
-    AkieGUI_Widget_T *btn = &g_buttons[g_button_count].btn;
+    AkieGUI_Widget_T *widget = &g_buttons[g_button_count].btn;
     Button_Private *priv = &g_buttons[g_button_count].priv;
     
-    memset(btn, 0, sizeof(AkieGUI_Widget_T));
+    memset(widget, 0, sizeof(AkieGUI_Widget_T));
     memset(priv, 0, sizeof(Button_Private));
     
     if (text) strncpy(priv->text, text, sizeof(priv->text) - 1);
@@ -102,20 +102,20 @@ AkieGUI_Widget_T* AkieGUI_Button_Create(
     priv->press_color = akiegui_argb888_to_native(press_color);
     priv->font = &ASCII_8x16;
     
-    btn->type = AKIEGUI_WIDGET_BUTTON;
-    btn->x = x;
-    btn->y = y;
-    btn->w = w;
-    btn->h = h;
-    btn->state = AKIEGUI_STATE_VISIBLE | AKIEGUI_STATE_ENABLED;
-    btn->border_color = akiegui_argb888_to_native(0xFF000000);
-    btn->border_width = 1;
-    btn->dirty = 1;
-    btn->draw = button_draw;
-    btn->priv = priv;
+    widget->type = AKIEGUI_WIDGET_BUTTON;
+    widget->x = x;
+    widget->y = y;
+    widget->w = w;
+    widget->h = h;
+    widget->state = AKIEGUI_STATE_VISIBLE | AKIEGUI_STATE_ENABLED;
+    widget->border_color = akiegui_argb888_to_native(0xFF000000);
+    widget->border_width = 1;
+    widget->dirty = 1;
+    widget->draw = button_draw;
+    widget->priv = priv;
     
     g_button_count++;
-    return btn;
+    return widget;
 }
 
 /**

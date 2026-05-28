@@ -157,10 +157,10 @@ AkieGUI_Widget_T* AkieGUI_Label_Create_Chinese(
 ) {
     if (g_label_count >= MAX_LABELS) return NULL;
     
-    AkieGUI_Widget_T *label = &g_labels[g_label_count].label;
+    AkieGUI_Widget_T *widget = &g_labels[g_label_count].label;
     Label_Private *priv = &g_labels[g_label_count].priv;
     
-    memset(label, 0, sizeof(AkieGUI_Widget_T));
+    memset(widget, 0, sizeof(AkieGUI_Widget_T));
     memset(priv, 0, sizeof(Label_Private));
     
     if (text) strncpy(priv->text, text, sizeof(priv->text) - 1);
@@ -177,18 +177,18 @@ AkieGUI_Widget_T* AkieGUI_Label_Create_Chinese(
     priv->chinese_font = ch_font;
     priv->transparent = (bg_color == 0xFFFF00);  /* 0xFFFF00 作为透明色标记 */
     
-    label->type = AKIEGUI_WIDGET_LABEL;
-    label->x = x;
-    label->y = y;
-    label->w = width;
-    label->h = height;
-    label->state = AKIEGUI_STATE_VISIBLE | AKIEGUI_STATE_ENABLED;
-    label->dirty = 1;
-    label->draw = label_draw_mixed;
-    label->priv = priv;
+    widget->type = AKIEGUI_WIDGET_LABEL;
+    widget->x = x;
+    widget->y = y;
+    widget->w = width;
+    widget->h = height;
+    widget->state = AKIEGUI_STATE_VISIBLE | AKIEGUI_STATE_ENABLED;
+    widget->dirty = 1;
+    widget->draw = label_draw_mixed;
+    widget->priv = priv;
     
     g_label_count++;
-    return label;
+    return widget;
 }
 
 /**

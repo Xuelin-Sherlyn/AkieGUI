@@ -126,7 +126,7 @@ void AkieGUI_Widget_RedrawAll(void) {
 AkieGUI_Widget_T* AkieGUI_Widget_HitTest(uint16_t x, uint16_t y) {
     for (uint8_t i = 0; i < g_widget_list.count; i++) {
         AkieGUI_Widget_T *w = g_widget_list.widgets[i];
-        if (!w || !(w->state & AKIEGUI_STATE_VISIBLE)) continue;
+        if (!w || !(w->state & AKIEGUI_STATE_VISIBLE) || !w->on_click) continue;
         
         if (x >= w->x && x < w->x + w->w &&
             y >= w->y && y < w->y + w->h) {
