@@ -28,8 +28,10 @@
 #define AkieGUI_LCD_HEIGHT  240        /* 显示屏高度方向像素 */
 #define AkieGUI_LCD_BPP     16         /* 显示屏像素位深 */
 
-/* ============= FreeRTOS适配配置 ============= */
-#define AkieGUI_USE_FREERTOS 0         /* 0=裸机内存池, 1=FreeRTOS堆 */
+/* ============= 颜色混合模式配置 ============= */
+#ifndef AKIEGUI_ENABLE_BLEND
+#define AKIEGUI_ENABLE_BLEND 0
+#endif
 
 /* FreeRTOS 默认配置 */
 #ifndef AkieGUI_USE_FREERTOS

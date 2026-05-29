@@ -60,6 +60,26 @@ static inline uint32_t akiegui_native_to_argb888(akiegui_color_t color) {
 #endif
 }
 
+static inline uint32_t alpha_blend(uint32_t bg, uint32_t fg) {
+    uint8_t a = (fg >> 24) & 0xFF;
+    if (a == 0xFF) return fg;
+    if (a == 0x00) return bg;
+
+    uint8_t bg_r = (bg >> 16) & 0xFF;
+    uint8_t bg_g = (bg >> 8) & 0xFF;
+    uint8_t bg_b = bg & 0xFF;
+
+    uint8_t fg_r = (fg >> 16) & 0xFF;
+    uint8_t fg_g = (fg >> 8) & 0xFF;
+    uint8_t fg_b = fg & 0xFF;
+
+    uint8_t r = (fg_r * a + bg_r * (255 - a)) / 255;
+    uint8_t g = (fg_g * a + bg_g * (255 - a)) / 255;
+    uint8_t b = (fg_b * a + bg_b * (255 - a)) / 255;
+
+    return (0xFF << 24) | (r << 16) | (g << 8) | b;
+}
+
 /* 预定义颜色（RGB888 格式）*/
 #define AKIEGUI_RED     0xFFFF0000
 #define AKIEGUI_GREEN   0xFF00FF00

@@ -120,7 +120,11 @@ AkieGUI_Widget_T* AkieGUI_Label_Create(
     priv->text_color = akiegui_argb888_to_native(text_color);
     priv->bg_color = akiegui_argb888_to_native(bg_color);
     priv->ascii_font = font;
-    priv->transparent = (bg_color == 0xFFFF00);  /* 0xFFFF00 作为透明色标记 */
+#if AkieGUI_LCD_BPP == 16
+    priv->transparent = (bg_color == 0xFFFF00);
+#else
+    priv->transparent = ((bg_color >> 24) == 0);
+#endif
     
     label->type = AKIEGUI_WIDGET_LABEL;
     label->x = x;
@@ -252,6 +256,10 @@ void AkieGUI_Label_SetBgColor(AkieGUI_Widget_T *label, uint32_t bg_color) {
     
     Label_Private *priv = (Label_Private*)label->priv;
     priv->bg_color = akiegui_argb888_to_native(bg_color);
-    priv->transparent = (bg_color == 0xFFFF00);  /* 0xFFFF00 透明 */
+#if AkieGUI_LCD_BPP == 16
+    priv->transparent = (bg_color == 0xFFFF00);
+#else
+    priv->transparent = ((bg_color >> 24) == 0);
+#endif
     label->dirty = 1;
 }

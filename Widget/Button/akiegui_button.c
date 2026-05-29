@@ -60,7 +60,7 @@ static void button_draw(AkieGUI_Widget_T *btn, void *fb) {
         uint16_t start_y = btn->y + (btn->h - text_h) / 2;
         
         akiegui_draw_string(fb, start_x, start_y, priv->text,
-                           priv->text_color, bg, 0, priv->font);
+                           priv->text_color, bg, 1, priv->font);
     }
     
     btn->dirty = 0;

@@ -12,6 +12,7 @@
 #ifndef __AKIEGUI_PROGRESS_H__
 #define __AKIEGUI_PROGRESS_H__
 
+#include "akiegui_color.h"
 #include "akiegui_widget.h"
 #include "akiegui_font_ascii.h"
 
@@ -25,7 +26,7 @@ typedef struct {
 
     uint8_t show_percent;
     pFONT *font;
-    uint16_t text_color;
+    akiegui_color_t text_color;
 } Progress_Private;
 
 AkieGUI_Widget_T* AkieGUI_Progress_Create(

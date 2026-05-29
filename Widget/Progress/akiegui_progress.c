@@ -98,7 +98,7 @@ AkieGUI_Widget_T* AkieGUI_Progress_Create(
     priv->max = (max == 0) ? 1 : max;
     priv->bg_color = akiegui_argb888_to_native(bg_color);
     priv->bar_color = akiegui_argb888_to_native(bar_color);
-    priv->border_color = akiegui_argb888_to_native(0x000000);
+    priv->border_color = akiegui_argb888_to_native(0xFF000000);
     priv->border_width = 1;
     priv->show_percent = 0;
 

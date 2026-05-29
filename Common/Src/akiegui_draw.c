@@ -10,6 +10,7 @@
  * B站: https://space.bilibili.com/1815675515
  */
 #include "akiegui_draw.h"
+#include "akiegui_color.h"
 #include <string.h>
 
 /**
@@ -43,7 +44,11 @@ void akiegui_draw_rect(
     for (uint16_t row = 0; row < h; row++) {
         uint32_t base = (y + row) * fb_width + x;
         for (uint16_t col = 0; col < w; col++) {
+#if AkieGUI_LCD_BPP == 32 && AKIEGUI_ENABLE_BLEND
+            fb32[base + col] = alpha_blend(fb32[base + col], color);
+#else
             fb32[base + col] = color;
+#endif
         }
     }
 #endif
@@ -108,9 +113,17 @@ void akiegui_draw_char(
                 
                 uint32_t fb_idx = (y + row) * fb_width + (x + col);
                 if (data & (1 << (7 - bit))) {
+#if AkieGUI_LCD_BPP == 32 && AKIEGUI_ENABLE_BLEND
+                    fb32[fb_idx] = alpha_blend(fb32[fb_idx], color);
+#else
                     fb32[fb_idx] = color;
+#endif
                 } else if (!transparent) {
+#if AkieGUI_LCD_BPP == 32 && AKIEGUI_ENABLE_BLEND
+                    fb32[fb_idx] = alpha_blend(fb32[fb_idx], bg_color);
+#else
                     fb32[fb_idx] = bg_color;
+#endif
                 }
             }
         }
@@ -141,7 +154,7 @@ void akiegui_draw_chinese_char(
     if (ch == NULL || font == NULL) return;
     // 字符编码到字库索引的映射
     uint16_t char_index = 0;
-    uint16_t fb_index = 0;
+    uint16_t fb_idx = 0;
 #if AkieGUI_LCD_BPP == 16
     uint16_t *fb16 = (uint16_t*)fb;
     while(1)
@@ -185,15 +198,15 @@ void akiegui_draw_chinese_char(
     while(1)
 	{		
 		// 通过对比数组中的汉字编码，定位字模地址
-		if ( *(font->pTable + (fb_index+1)*font->Sizes + 0)==*ch && *(font->pTable + (fb_index+1)*font->Sizes + 1)==*(ch+1) )	
+		if ( *(font->pTable + (fb_idx+1)*font->Sizes + 0)==*ch && *(font->pTable + (fb_idx+1)*font->Sizes + 1)==*(ch+1) )	
 		{
-		  char_index=fb_index;	// 字模地址偏移
+		  char_index=fb_idx;	// 字模地址偏移
 		  break;
 		}				
-		fb_index+=2;	// 每个中文字符占两字节
-		if(fb_index >= font->Table_Rows)	return;	// 字模列表没这个字
+		fb_idx+=2;	// 每个中文字符占两字节
+		if(fb_idx >= font->Table_Rows)	return;	// 字模列表没这个字
 	}
-    fb_index = 0;
+    fb_idx = 0;
     // 计算字模数据偏移量
     const uint8_t* char_data = font->pTable + char_index * font->Sizes;
     // 计算每行需要的字节数
@@ -208,11 +221,19 @@ void akiegui_draw_chinese_char(
                 uint8_t col = start_col + bit;
                 if (col >= font->Width) break;
 
-                fb_index = (y + row) * g_akiegui.fb_width + (x + col);
+                fb_idx = (y + row) * g_akiegui.fb_width + (x + col);
                 if (line_byte & (1 << (7 - bit))) {
-                   fb32[fb_index] = color;
+#if AkieGUI_LCD_BPP == 32 && AKIEGUI_ENABLE_BLEND
+                    fb32[fb_idx] = alpha_blend(fb32[fb_idx], color);
+#else
+                    fb32[fb_idx] = color;
+#endif
                 } else if (!transparent) {
-                    fb32[fb_index] = bg_color;
+#if AkieGUI_LCD_BPP == 32 && AKIEGUI_ENABLE_BLEND
+                    fb32[fb_idx] = alpha_blend(fb32[fb_idx], bg_color);
+#else
+                    fb32[fb_idx] = bg_color;
+#endif
                 }
             }
         }

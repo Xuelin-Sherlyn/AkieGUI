@@ -79,7 +79,11 @@ static void draw_image_no_scale(void *fb, AkieGUI_Widget_T *widget, Image_Privat
         for (uint16_t x = 0; x < draw_w; x++) {
             akiegui_color_t color = get_pixel(info->data, x, y, info->width);
             uint32_t fb_idx = (start_y + y) * fb_width + (start_x + x);
+#if AkieGUI_LCD_BPP == 32 || AKIEGUI_ENABLE_BLEND
+            fb32[fb_idx] = alpha_blend(fb32[fb_idx], color);
+#else
             fb32[fb_idx] = color;
+#endif
         }
     }
 #endif
@@ -126,7 +130,11 @@ static void draw_image_scaled(void *fb, AkieGUI_Widget_T *widget, Image_Private 
             
             akiegui_color_t color = get_pixel(info->data, src_x, src_y, info->width);
             uint32_t fb_idx = (widget->y + y) * fb_width + (widget->x + x);
+#if AkieGUI_LCD_BPP == 32 && AKIEGUI_ENABLE_BLEND
+            fb32[fb_idx] = alpha_blend(fb32[fb_idx], color);
+#else
             fb32[fb_idx] = color;
+#endif
         }
     }
 #endif
