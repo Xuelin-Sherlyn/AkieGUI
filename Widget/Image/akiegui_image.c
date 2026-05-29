@@ -68,7 +68,7 @@ static void draw_image_no_scale(void *fb, AkieGUI_Widget_T *widget, Image_Privat
     uint16_t *fb16 = (uint16_t*)fb;
     for (uint16_t y = 0; y < draw_h; y++) {
         for (uint16_t x = 0; x < draw_w; x++) {
-            akiegui_color_t color = get_pixel_rgb888(info->data, x, y, info->width);
+            akiegui_color_t color = get_pixel(info->data, x, y, info->width);
             uint32_t fb_idx = (start_y + y) * fb_width + (start_x + x);
             fb16[fb_idx] = color;
         }
@@ -109,7 +109,7 @@ static void draw_image_scaled(void *fb, AkieGUI_Widget_T *widget, Image_Private 
             uint16_t src_x = (uint16_t)(x * scale_x);
             if (src_x >= info->width) src_x = info->width - 1;
             
-            akiegui_color_t color = get_pixel_rgb888(info->data, src_x, src_y, info->width);
+            akiegui_color_t color = get_pixel(info->data, src_x, src_y, info->width);
             uint32_t fb_idx = (widget->y + y) * fb_width + (widget->x + x);
             fb16[fb_idx] = color;
         }
