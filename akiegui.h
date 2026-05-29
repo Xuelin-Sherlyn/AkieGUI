@@ -34,6 +34,6 @@
 /* 版本信息 */
 #define AKIEGUI_VERSION_MAJOR    0
 #define AKIEGUI_VERSION_MINOR    7
-#define AKIEGUI_VERSION_PATCH    7
+#define AKIEGUI_VERSION_PATCH    8
 
 #endif

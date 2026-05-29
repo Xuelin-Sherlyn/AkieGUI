@@ -19,6 +19,12 @@ static struct {
     uint8_t count;
 } g_widget_list;
 
+/* 全局脏矩形区域（用于局部刷新）*/
+static uint16_t dirty_min_x = 0xFFFF;
+static uint16_t dirty_min_y = 0xFFFF;
+static uint16_t dirty_max_x = 0;
+static uint16_t dirty_max_y = 0;
+
 /**
   * @brief	Widget初始化
 */
@@ -75,11 +81,23 @@ void AkieGUI_Widget_RemoveAll(void) {
 }
 
 /**
-  * @brief	标记脏矩形
-  *	@param	widget: widget句柄
-*/
+  * @brief	标记控件脏，并扩展全局脏矩形
+  * @param	widget: 控件句柄
+  */
 void AkieGUI_Widget_MarkDirty(AkieGUI_Widget_T *widget) {
-    if (widget) widget->dirty = 1;
+    if (!widget) return;
+
+    // 1. 原有控件脏标记
+    widget->dirty = 1;
+
+    // 2. 扩展全局脏矩形（包含控件全部区域）
+    uint16_t right = widget->x + widget->w;
+    uint16_t bottom = widget->y + widget->h;
+
+    if (widget->x < dirty_min_x) dirty_min_x = widget->x;
+    if (widget->y < dirty_min_y) dirty_min_y = widget->y;
+    if (right   > dirty_max_x)   dirty_max_x = right;
+    if (bottom  > dirty_max_y)   dirty_max_y = bottom;
 }
 
 /**
@@ -116,6 +134,38 @@ void AkieGUI_Widget_RedrawAll(void) {
     }
     
     AkieGUI_Commit();
+}
+
+/**
+  * @brief	只重绘全局脏矩形区域
+  */
+void AkieGUI_Widget_RedrawDirtyRegion(void) {
+    if (dirty_min_x > dirty_max_x) return;  // 无脏区域
+
+    // 只绘制与脏矩形相交的控件
+    for (int i = 0; i < g_widget_list.count; i++) {
+        AkieGUI_Widget_T *w = g_widget_list.widgets[i];
+        if (!(w->state & AKIEGUI_STATE_VISIBLE)) continue;
+
+        // 简单相交判断
+        if (w->x + w->w <= dirty_min_x) continue;
+        if (w->y + w->h <= dirty_min_y) continue;
+        if (w->x >= dirty_max_x) continue;
+        if (w->y >= dirty_max_y) continue;
+
+        if (w->dirty && w->draw) {
+            w->draw(w, AkieGUI_GetDrawFB());
+        }
+    }
+
+    // 提交脏矩形到屏幕（节省传输带宽）
+    AkieGUI_CommitRegion(dirty_min_x, dirty_min_y,
+                         dirty_max_x - dirty_min_x,
+                         dirty_max_y - dirty_min_y);
+
+    // 重置脏矩形
+    dirty_min_x = 0xFFFF; dirty_min_y = 0xFFFF;
+    dirty_max_x = 0;      dirty_max_y = 0;
 }
 
 /**

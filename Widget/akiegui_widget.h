@@ -68,6 +68,7 @@ void AkieGUI_Widget_Remove(AkieGUI_Widget_T *widget);
 void AkieGUI_Widget_RemoveAll(void);
 void AkieGUI_Widget_DrawDirtyAll(void);
 void AkieGUI_Widget_RedrawAll(void);
+void AkieGUI_Widget_RedrawDirtyRegion(void);
 void AkieGUI_Widget_MarkDirty(AkieGUI_Widget_T *widget);
 AkieGUI_Widget_T* AkieGUI_Widget_HitTest(uint16_t x, uint16_t y);
 

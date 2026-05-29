@@ -30,40 +30,40 @@ static uint8_t g_button_count = 0;
   *	@param	btn: 按钮句柄
   *	@param	fb: 绘制缓冲区
 */
-static void button_draw(AkieGUI_Widget_T *btn, void *fb) {
-    Button_Private *priv = (Button_Private*)btn->priv;
+static void button_draw(AkieGUI_Widget_T *widget, void *fb) {
+    Button_Private *priv = (Button_Private*)widget->priv;
     
     /* 选择背景色 */
     akiegui_color_t bg = priv->bg_color;
-    if (btn->state & AKIEGUI_STATE_PRESSED) {
+    if (widget->state & AKIEGUI_STATE_PRESSED) {
         bg = priv->press_color;
     }
     
     /* 绘制背景 */
-    akiegui_draw_rect(fb, btn->x, btn->y, btn->w, btn->h, bg);
+    akiegui_draw_rect(fb, widget->x, widget->y, widget->w, widget->h, bg);
     
     /* 绘制边框 */
-    if (btn->border_width > 0) {
-        akiegui_draw_rect(fb, btn->x, btn->y, btn->w, btn->border_width, btn->border_color);
-        akiegui_draw_rect(fb, btn->x, btn->y + btn->h - btn->border_width, 
-                         btn->w, btn->border_width, btn->border_color);
-        akiegui_draw_rect(fb, btn->x, btn->y, btn->border_width, btn->h, btn->border_color);
-        akiegui_draw_rect(fb, btn->x + btn->w - btn->border_width, btn->y, 
-                         btn->border_width, btn->h, btn->border_color);
+    if (widget->border_width > 0) {
+        akiegui_draw_rect(fb, widget->x, widget->y, widget->w, widget->border_width, widget->border_color);
+        akiegui_draw_rect(fb, widget->x, widget->y + widget->h - widget->border_width, 
+                         widget->w, widget->border_width, widget->border_color);
+        akiegui_draw_rect(fb, widget->x, widget->y, widget->border_width, widget->h, widget->border_color);
+        akiegui_draw_rect(fb, widget->x + widget->w - widget->border_width, widget->y, 
+                         widget->border_width, widget->h, widget->border_color);
     }
     
     /* 绘制文字 - 居中 */
     if (priv->text[0] != '\0' && priv->font) {
         uint16_t text_w = akiegui_text_width(priv->text, priv->font);
         uint16_t text_h = priv->font->Height;
-        uint16_t start_x = btn->x + (btn->w - text_w) / 2;
-        uint16_t start_y = btn->y + (btn->h - text_h) / 2;
+        uint16_t start_x = widget->x + (widget->w - text_w) / 2;
+        uint16_t start_y = widget->y + (widget->h - text_h) / 2;
         
         akiegui_draw_string(fb, start_x, start_y, priv->text,
                            priv->text_color, bg, 1, priv->font);
     }
     
-    btn->dirty = 0;
+    widget->dirty = 0;
 }
 
 /**
@@ -123,12 +123,12 @@ AkieGUI_Widget_T* AkieGUI_Button_Create(
   *	@param	btn: 按钮句柄
   *	@param	font: 要使用的字体
 */
-void AkieGUI_Button_SetFont(AkieGUI_Widget_T *btn, pFONT *font) {
-    if (!btn || btn->type != AKIEGUI_WIDGET_BUTTON || !font) return;
+void AkieGUI_Button_SetFont(AkieGUI_Widget_T *widget, pFONT *font) {
+    if (!widget || widget->type != AKIEGUI_WIDGET_BUTTON || !font) return;
     
-    Button_Private *priv = (Button_Private*)btn->priv;
+    Button_Private *priv = (Button_Private*)widget->priv;
     priv->font = font;
-    btn->dirty = 1;  /* 标记需要重绘 */
+    widget->dirty = 1;  /* 标记需要重绘 */
 }
 
 /**
@@ -136,13 +136,13 @@ void AkieGUI_Button_SetFont(AkieGUI_Widget_T *btn, pFONT *font) {
   *	@param	btn: 按钮句柄
   *	@param	text: 目标按钮要修改到的文本
 */
-void AkieGUI_Button_SetText(AkieGUI_Widget_T *btn, const char *text) {
-    if (!btn || btn->type != AKIEGUI_WIDGET_BUTTON || !text) return;
+void AkieGUI_Button_SetText(AkieGUI_Widget_T *widget, const char *text) {
+    if (!widget || widget->type != AKIEGUI_WIDGET_BUTTON || !text) return;
     
-    Button_Private *priv = (Button_Private*)btn->priv;
+    Button_Private *priv = (Button_Private*)widget->priv;
     strncpy(priv->text, text, sizeof(priv->text) - 1);
     priv->text[sizeof(priv->text) - 1] = '\0';  /* 确保结尾有\0 */
-    btn->dirty = 1;  /* 标记需要重绘 */
+    widget->dirty = 1;  /* 标记需要重绘 */
 }
 
 /**
@@ -153,16 +153,16 @@ void AkieGUI_Button_SetText(AkieGUI_Widget_T *btn, const char *text) {
   *	@param	press_color: 按钮按下后的颜色
 */
 void AkieGUI_Button_SetColors(
-    AkieGUI_Widget_T *btn,
+    AkieGUI_Widget_T *widget,
     uint32_t text_color,
     uint32_t bg_color,
     uint32_t press_color
 ) {
-    if (!btn || btn->type != AKIEGUI_WIDGET_BUTTON) return;
+    if (!widget || widget->type != AKIEGUI_WIDGET_BUTTON) return;
     
-    Button_Private *priv = (Button_Private*)btn->priv;
+    Button_Private *priv = (Button_Private*)widget->priv;
     priv->text_color = akiegui_argb888_to_native(text_color);
     priv->bg_color = akiegui_argb888_to_native(bg_color);
     priv->press_color = akiegui_argb888_to_native(press_color);
-    btn->dirty = 1;
+    widget->dirty = 1;
 }

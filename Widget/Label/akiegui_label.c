@@ -37,27 +37,27 @@ static uint8_t g_label_count = 0;
   *	@param	lable: 标签句柄
   *	@param	fb: 绘制缓冲区
 */
-static void label_draw(AkieGUI_Widget_T *label, void *fb) {
-    Label_Private *priv = (Label_Private*)label->priv;
+static void label_draw(AkieGUI_Widget_T *widget, void *fb) {
+    Label_Private *priv = (Label_Private*)widget->priv;
     
     /* 如果不透明，先画背景 */
     if (!priv->transparent) {
-        akiegui_draw_rect(fb, label->x, label->y, label->w, label->h, priv->bg_color);
+        akiegui_draw_rect(fb, widget->x, widget->y, widget->w, widget->h, priv->bg_color);
     }
     
     /* 画文字 - 居中 */
     if (priv->text[0] != '\0' && priv->ascii_font) {
         uint16_t text_w = akiegui_text_width(priv->text, priv->ascii_font);
         uint16_t text_h = priv->ascii_font->Height;
-        uint16_t start_x = label->x + (label->w - text_w) / 2;
-        uint16_t start_y = label->y + (label->h - text_h) / 2;
+        uint16_t start_x = widget->x + (widget->w - text_w) / 2;
+        uint16_t start_y = widget->y + (widget->h - text_h) / 2;
 
         akiegui_draw_string(fb, start_x, start_y, priv->text,
                        priv->text_color, priv->bg_color, 
                        priv->transparent, priv->ascii_font);
     }
     
-    label->dirty = 0;
+    widget->dirty = 0;
 }
 
 /**
@@ -103,10 +103,10 @@ AkieGUI_Widget_T* AkieGUI_Label_Create(
 ) {
     if (g_label_count >= MAX_LABELS) return NULL;
     
-    AkieGUI_Widget_T *label = &g_labels[g_label_count].label;
+    AkieGUI_Widget_T *widget = &g_labels[g_label_count].label;
     Label_Private *priv = &g_labels[g_label_count].priv;
     
-    memset(label, 0, sizeof(AkieGUI_Widget_T));
+    memset(widget, 0, sizeof(AkieGUI_Widget_T));
     memset(priv, 0, sizeof(Label_Private));
     
     if (text) strncpy(priv->text, text, sizeof(priv->text) - 1);
@@ -126,18 +126,18 @@ AkieGUI_Widget_T* AkieGUI_Label_Create(
     priv->transparent = ((bg_color >> 24) == 0);
 #endif
     
-    label->type = AKIEGUI_WIDGET_LABEL;
-    label->x = x;
-    label->y = y;
-    label->w = width;
-    label->h = height;
-    label->state = AKIEGUI_STATE_VISIBLE | AKIEGUI_STATE_ENABLED;
-    label->dirty = 1;
-    label->draw = label_draw;
-    label->priv = priv;
+    widget->type = AKIEGUI_WIDGET_LABEL;
+    widget->x = x;
+    widget->y = y;
+    widget->w = width;
+    widget->h = height;
+    widget->state = AKIEGUI_STATE_VISIBLE | AKIEGUI_STATE_ENABLED;
+    widget->dirty = 1;
+    widget->draw = label_draw;
+    widget->priv = priv;
     
     g_label_count++;
-    return label;
+    return widget;
 }
 
 /**
@@ -200,18 +200,18 @@ AkieGUI_Widget_T* AkieGUI_Label_Create_Chinese(
   * @param  lable: 标签句柄
   * @param  text: 标签文本
 */
-void AkieGUI_Label_SetText(AkieGUI_Widget_T *label, const char *text) {
-    if (!label || label->type != AKIEGUI_WIDGET_LABEL || !text) return;
+void AkieGUI_Label_SetText(AkieGUI_Widget_T *widget, const char *text) {
+    if (!widget || widget->type != AKIEGUI_WIDGET_LABEL || !text) return;
     
-    Label_Private *priv = (Label_Private*)label->priv;
+    Label_Private *priv = (Label_Private*)widget->priv;
     strncpy(priv->text, text, sizeof(priv->text) - 1);
     priv->text[sizeof(priv->text) - 1] = '\0';
     
     /* 重新计算宽度（如果需要自动调整）*/
     uint16_t text_len = strlen(text);
-    label->w = text_len * priv->ascii_font->Width + 4;
+    widget->w = text_len * priv->ascii_font->Width + 4;
     
-    label->dirty = 1;
+    widget->dirty = 1;
 }
 
 /**
@@ -219,18 +219,18 @@ void AkieGUI_Label_SetText(AkieGUI_Widget_T *label, const char *text) {
   * @param  lable: 标签句柄
   * @param  text: 标签文本
 */
-void AkieGUI_Label_SetText_Chinese(AkieGUI_Widget_T *label, const char *text) {
-    if (!label || label->type != AKIEGUI_WIDGET_LABEL || !text) return;
+void AkieGUI_Label_SetText_Chinese(AkieGUI_Widget_T *widget, const char *text) {
+    if (!widget || widget->type != AKIEGUI_WIDGET_LABEL || !text) return;
     
-    Label_Private *priv = (Label_Private*)label->priv;
+    Label_Private *priv = (Label_Private*)widget->priv;
     strncpy(priv->text, text, sizeof(priv->text) - 1);
     priv->text[sizeof(priv->text) - 1] = '\0';
     
     /* 重新计算宽度（如果需要自动调整）*/
     uint16_t text_len = strlen(text);
-    label->w = text_len * priv->chinese_font->Width + 4;
+    widget->w = text_len * priv->chinese_font->Width + 4;
     
-    label->dirty = 1;
+    widget->dirty = 1;
 }
 
 /**
@@ -238,12 +238,12 @@ void AkieGUI_Label_SetText_Chinese(AkieGUI_Widget_T *label, const char *text) {
   * @param  lable: 标签句柄
   * @param  text_color: 标签文本颜色
 */
-void AkieGUI_Label_SetColor(AkieGUI_Widget_T *label, uint32_t text_color) {
-    if (!label || label->type != AKIEGUI_WIDGET_LABEL) return;
+void AkieGUI_Label_SetColor(AkieGUI_Widget_T *widget, uint32_t text_color) {
+    if (!widget || widget->type != AKIEGUI_WIDGET_LABEL) return;
     
-    Label_Private *priv = (Label_Private*)label->priv;
+    Label_Private *priv = (Label_Private*)widget->priv;
     priv->text_color = akiegui_argb888_to_native(text_color);
-    label->dirty = 1;
+    widget->dirty = 1;
 }
 
 /**
@@ -251,15 +251,15 @@ void AkieGUI_Label_SetColor(AkieGUI_Widget_T *label, uint32_t text_color) {
   * @param  lable: 标签句柄
   * @param  bg_color: 标签背景颜色
 */
-void AkieGUI_Label_SetBgColor(AkieGUI_Widget_T *label, uint32_t bg_color) {
-    if (!label || label->type != AKIEGUI_WIDGET_LABEL) return;
+void AkieGUI_Label_SetBgColor(AkieGUI_Widget_T *widget, uint32_t bg_color) {
+    if (!widget || widget->type != AKIEGUI_WIDGET_LABEL) return;
     
-    Label_Private *priv = (Label_Private*)label->priv;
+    Label_Private *priv = (Label_Private*)widget->priv;
     priv->bg_color = akiegui_argb888_to_native(bg_color);
 #if AkieGUI_LCD_BPP == 16
     priv->transparent = (bg_color == 0xFFFF00);
 #else
     priv->transparent = ((bg_color >> 24) == 0);
 #endif
-    label->dirty = 1;
+    widget->dirty = 1;
 }

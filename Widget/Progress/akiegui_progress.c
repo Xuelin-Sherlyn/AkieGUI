@@ -84,6 +84,14 @@ AkieGUI_Widget_T* AkieGUI_Progress_Create(
     memset(widget, 0, sizeof(AkieGUI_Widget_T));
     memset(priv, 0, sizeof(Progress_Private));
 
+    priv->value = 0;
+    priv->max = (max == 0) ? 1 : max;
+    priv->bg_color = akiegui_argb888_to_native(bg_color);
+    priv->bar_color = akiegui_argb888_to_native(bar_color);
+    priv->border_color = akiegui_argb888_to_native(0xFF000000);
+    priv->border_width = 1;
+    priv->show_percent = 0;
+
     widget->x = x;
     widget->y = y;
     widget->w = w;
@@ -93,14 +101,6 @@ AkieGUI_Widget_T* AkieGUI_Progress_Create(
     widget->dirty = 1;
     widget->draw = progress_draw;
     widget->priv = priv;
-
-    priv->value = 0;
-    priv->max = (max == 0) ? 1 : max;
-    priv->bg_color = akiegui_argb888_to_native(bg_color);
-    priv->bar_color = akiegui_argb888_to_native(bar_color);
-    priv->border_color = akiegui_argb888_to_native(0xFF000000);
-    priv->border_width = 1;
-    priv->show_percent = 0;
 
     g_progress_count++;
     return widget;
