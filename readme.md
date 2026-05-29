@@ -28,6 +28,8 @@
   - [场景2：SPI彩屏 + BDMA（STM32H7 D3域）](#场景2spi彩屏--bdmastm32h7-d3域)
   - [场景3：无DMA，轮询发送（低端MCU）](#场景3无dma轮询发送低端mcu)
   - [场景4：FreeRTOS多任务](#场景4freertos多任务)
+  - [场景5：LTDC + DMA2D（RGB接口高速屏）](#场景5ltdc--dma2drgb接口高速屏)
+  - [场景6：LTDC + 双缓冲 + TE（零撕裂）](#场景6ltdc--双缓冲--te零撕裂)
 - [📈 性能优化建议](#-性能优化建议)
 - [✅ 已知问题 \& 解决方案](#-已知问题--解决方案)
 - [📄 开源协议](#-开源协议)
@@ -251,6 +253,7 @@ AKIEGUI_BLACK    0xFF000000
 | `AkieGUI_Widget_DrawDirtyAll()` | 绘制所有脏控件并提交 |
 | `AkieGUI_Widget_RedrawAll()` | 强制重绘所有控件 |
 | `AkieGUI_Widget_MarkDirty(widget)` | 标记控件需要重绘 |
+| `AkieGUI_Widget_RedrawDirtyRegion()`| 重绘脏矩形 |
 | `AkieGUI_Widget_HitTest(x, y)` | 命中测试，返回坐标上的控件 |
 | `AkieGUI_ProcessTouch()` | 触摸处理函数 |
 
@@ -474,6 +477,28 @@ void task_touch(void *arg) {
      DMA2D->CR |= DMA2D_IT_TC;                                       /* 开启传输完成中断 */
      DMA2D->CR |= DMA2D_CR_START;                                    /* 启动传输 */
      
+     dma2d_busy = 1;
+ }
+
+ void my_send_region(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *data){
+     uint32_t preaddr = AkieGUI_MEM_ADDR;
+     uint32_t addr = preaddr + (AkieGUI_LCD_BPP / 8) * (AkieGUI_LCD_WIDTH * y + x);
+     uint32_t OffLineSrc = AkieGUI_LCD_WIDTH - w;
+ 
+     /* 清理无效的数据缓存 */
+     /* 如果MCU有D-Cache，需要做Cache维护。如果无Cache，可注释掉 */
+     SCB_CleanInvalidateDCache();
+ 
+     DMA2D->CR      = 0x00000000UL | (1 << 9);               /* 内存到内存模式 */
+     DMA2D->FGMAR   = (uint32_t)data;                        // 源地址
+     DMA2D->OMAR    = addr;                                  // 目标地址
+     DMA2D->FGOR    = OffLineSrc;                            // 输入偏移
+     DMA2D->OOR     = OffLineSrc;                            // 输出偏移
+     DMA2D->FGPFCCR = DMA2D_INPUT_ARGB8888;                  /* 前景层和输出区域都采用的ARGB8888颜色格式 */
+     DMA2D->OPFCCR  = DMA2D_OUTPUT_ARGB8888;                 /* 前景层和输出区域都采用的ARGB8888颜色格式 */
+     DMA2D->NLR     = (w << 16) | h;                         // 设置行、列
+     DMA2D->CR     |= DMA2D_IT_TC;                           /*开启中断*/
+     DMA2D->CR     |= DMA2D_CR_START;                        /*启动传输*/
      dma2d_busy = 1;
  }
  

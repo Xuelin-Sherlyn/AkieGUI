@@ -105,7 +105,7 @@ void AkieGUI_ProcessTouch(void) {
         if (g_touch_down_widget) {
             g_touch_down_widget->state |= AKIEGUI_STATE_PRESSED;
             AkieGUI_Widget_MarkDirty(g_touch_down_widget);
-            AkieGUI_Widget_RedrawAll();   // 或只刷新脏控件
+            AkieGUI_Widget_RedrawDirtyRegion();   // 或只刷新脏控件
             if(g_touch_down_widget->on_click)
             {
                 g_touch_down_widget->on_click(g_touch_down_widget);
@@ -119,7 +119,7 @@ void AkieGUI_ProcessTouch(void) {
             }
             g_touch_down_widget->state &= ~AKIEGUI_STATE_PRESSED;
             AkieGUI_Widget_MarkDirty(g_touch_down_widget);
-            AkieGUI_Widget_RedrawAll();
+            AkieGUI_Widget_RedrawDirtyRegion();
             g_touch_down_widget = NULL;
         }
     }else {

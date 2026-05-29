@@ -159,9 +159,12 @@ void AkieGUI_Widget_RedrawDirtyRegion(void) {
     }
 
     // 提交脏矩形到屏幕（节省传输带宽）
-    AkieGUI_CommitRegion(dirty_min_x, dirty_min_y,
-                         dirty_max_x - dirty_min_x,
-                         dirty_max_y - dirty_min_y);
+    uint16_t w = dirty_max_x - dirty_min_x;
+    uint16_t h = dirty_max_y - dirty_min_y;
+
+    if (w == 0 || h == 0) return;
+
+    AkieGUI_CommitRegion(dirty_min_x, dirty_min_y, w, h);
 
     // 重置脏矩形
     dirty_min_x = 0xFFFF; dirty_min_y = 0xFFFF;

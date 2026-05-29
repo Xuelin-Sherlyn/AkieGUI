@@ -147,22 +147,18 @@ static inline int AkieGUI_Commit(void) {
  * @brief 提交区域到屏幕
  */
 static inline int AkieGUI_CommitRegion(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
-    /* 参数检查 */
     if (x >= g_akiegui.fb_width || y >= g_akiegui.fb_height) return -1;
     if (x + w > g_akiegui.fb_width) w = g_akiegui.fb_width - x;
     if (y + h > g_akiegui.fb_height) h = g_akiegui.fb_height - y;
     if (w == 0 || h == 0) return 0;
-    
+
     uint32_t bytes_per_pixel = g_akiegui.fb_bpp / 8;
-    uint32_t stride = g_akiegui.fb_width * bytes_per_pixel;
     uint32_t offset = (y * g_akiegui.fb_width + x) * bytes_per_pixel;
-    // uint32_t line_bytes = w * bytes_per_pixel;
-    
-    for (uint16_t i = 0; i < h; i++) {
-        /* 逐行发送，line_bytes表示每行数据大小 */
-        AkieGUI_SendRegion(x, y + i, w, 1, 
-                          g_akiegui.draw_fb + offset + i * stride);
-    }
+
+    // 一次发送整个矩形区域
+    AkieGUI_SendRegion(x, y, w, h, g_akiegui.draw_fb + offset);
+    AkieGUI_WaitTE();
+
     return 0;
 }
 
