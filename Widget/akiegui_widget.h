@@ -64,12 +64,16 @@ typedef struct AkieGUI_Widget {
 /* 控件管理器 */
 void AkieGUI_Widget_Init(void);
 void AkieGUI_Widget_Add(AkieGUI_Widget_T *widget);
+void AkieGUI_BackupBackground(void);
 void AkieGUI_Widget_Remove(AkieGUI_Widget_T *widget);
 void AkieGUI_Widget_RemoveAll(void);
 void AkieGUI_Widget_DrawDirtyAll(void);
 void AkieGUI_Widget_RedrawAll(void);
 void AkieGUI_Widget_RedrawDirtyRegion(void);
 void AkieGUI_Widget_MarkDirty(AkieGUI_Widget_T *widget);
+void AkieGUI_Widget_MarkRegionDirty(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
+void AkieGUI_Widget_ClearDirtyRegion(uint16_t x, uint16_t y, uint16_t w, uint16_t h);
 AkieGUI_Widget_T* AkieGUI_Widget_HitTest(uint16_t x, uint16_t y);
+void AkieGUI_Widget_Move(AkieGUI_Widget_T *widget, uint16_t new_x, uint16_t new_y);
 
 #endif
