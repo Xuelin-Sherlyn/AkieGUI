@@ -2,6 +2,7 @@
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPLv3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0.html)
 [![Platform: ARM Cortex-M](https://img.shields.io/badge/Platform-ARM%20Cortex--M-blue)](https://www.arm.com/zh-cn/architecture/cpu/m-profile)
+[![Platform: Risc-V](https://img.shields.io/badge/Platform-Risc--V-purple)](https://riscv.org)
 [![Language: C](https://img.shields.io/badge/Language-%20C-blue)]()
 
 ![AkieGUI Logo](./assets/AkieGUI_Logo.png)
@@ -44,9 +45,9 @@
 
 > [!IMPORTANT]
 > ### 当前阶段和实现的功能？
-> 当前在还未实际上机进行测试的Native阶段，实现了内存管理和显存发送操作。
+> 已上机测试并且拿到BW展示了，已经兼容ESP32 S31
 >
-> 请注意，代码示例里有部分API是目前未实现的，需要等待后续的测试后更新。
+> 用的时候记得根据临界区实际代码改改ASM指令
 > 
 
 ## 🎨 原创声明

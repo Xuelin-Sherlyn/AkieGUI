@@ -25,7 +25,7 @@
 #include "stddef.h"
 
 /* 全局实例定义 */
-AkieGUI_t g_akiegui = {
+AkieGUI_T g_akiegui = {
 #if AkieGUI_TE_MODE == AkieGUI_KE_TE_EN
     .te_pending = 0,
 #endif

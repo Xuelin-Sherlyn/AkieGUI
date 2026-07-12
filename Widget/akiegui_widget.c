@@ -57,7 +57,6 @@ void AkieGUI_BackupBackground(void) {
   * @brief	恢复背景
 */
 void AkieGUI_RestoreBackgroundArea(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
-    safe_printf("\033[32m[LOG_I] Restore rect: [%d,%d %dx%d]\033[0m\r\n", x, y, w, h);
     uint32_t offset = (y * g_akiegui.fb_width + x) * (g_akiegui.fb_bpp / 8);
     g_akiegui.send_region(x, y, w, h, g_backup_fb + offset);
 }
@@ -147,7 +146,6 @@ void AkieGUI_Widget_MarkRegionDirty(uint16_t x, uint16_t y, uint16_t w, uint16_t
 void AkieGUI_Widget_ClearDirtyRegion(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
     if (w == 0 || h == 0) return;
     if (dirty_min_x > dirty_max_x) return;  // 无脏区域
-    safe_printf("\033[32m[LOG_I] Clear dirty region: [%d,%d %dx%d]\033[0m\r\n", x, y, w, h);
     uint16_t clear_right = x + w;
     uint16_t clear_bottom = y + h;
 

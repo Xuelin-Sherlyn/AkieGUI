@@ -50,10 +50,10 @@ typedef struct {
     
     /* ----- 用户自定义 ----- */
     void *user_data;
-} AkieGUI_t;
+} AkieGUI_T;
 
 /* 全局实例 */
-extern AkieGUI_t g_akiegui;
+extern AkieGUI_T g_akiegui;
 
 /* ============= TE同步API（编译期优化）============= */
 
