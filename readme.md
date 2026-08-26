@@ -1,6 +1,6 @@
 # AkieGUI:送给各位绘星的嵌入式极简图形库 🍁
 
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPLv3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0.html)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![Platform: ARM Cortex-M](https://img.shields.io/badge/Platform-ARM%20Cortex--M-blue)](https://www.arm.com/zh-cn/architecture/cpu/m-profile)
 [![Platform: Risc-V](https://img.shields.io/badge/Platform-Risc--V-purple)](https://riscv.org)
 [![Language: C](https://img.shields.io/badge/Language-%20C-blue)]()
@@ -34,14 +34,6 @@
 - [📈 性能优化建议](#-性能优化建议)
 - [✅ 已知问题 \& 解决方案](#-已知问题--解决方案)
 - [📄 开源协议](#-开源协议)
-- [⚖️ AGPLv3 核心要求](#️-agplv3-核心要求)
-  - [✅ 允许的（免费，无需联系我）：](#-允许的免费无需联系我)
-  - [❌ 不允许的（别这么干）：](#-不允许的别这么干)
-- [🤝 贡献指南](#-贡献指南)
-  - [首次贡献？没问题！ 可以从以下方面入手：](#首次贡献没问题-可以从以下方面入手)
-- [🍁 特别致谢](#-特别致谢)
-- [📮 联系方式](#-联系方式)
-- [📢 违规使用举报通道](#-违规使用举报通道)
 
 > [!IMPORTANT]
 > ### 当前阶段和实现的功能？
@@ -559,45 +551,21 @@ void task_touch(void *arg) {
 |内存分配失败 | 内存池太小 | 增大内存池或减少双缓冲 |
 
 ## 📄 开源协议
-**AkieGUI ©** 2026 [雪琳Sherlyn/Xuelin-Sherlyn]
-
-本软件采用 **GNU Affero General Public License v3.0 (AGPLv3)** 协议发布。
-```text
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program. If not, see <https://www.gnu.org/licenses/>.
 ```
+AkieGUI Copyright [2026] [雪琳Sherlyn/Xuelin-Sherlyn]
 
-## ⚖️ AGPLv3 核心要求
-### ✅ 允许的（免费，无需联系我）：
-- 个人学习、研究
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-- 毕设/课程设计（必须开源、必须注明来源）
+    http://www.apache.org/licenses/LICENSE-2.0
 
-- 开源项目（必须同样以AGPLv3开源）
-
-- 商业产品（必须开源你的修改）
-
-- 网络服务（必须提供源代码）
-
-### ❌ 不允许的（别这么干）：
-- 删掉版权声明
-
-- 不提供源代码就分发
-
-- 闭源商用（AGPLv3要求必须开源，因此闭源商用不被允许）
-
-**有bug自己修哈，我做的是代码，不是服务。**  
-但如果能把bug现象和修复过程发到Issues也可以帮到不少人
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
 
 ## 🤝 贡献指南
 1. Fork 本仓库
@@ -618,7 +586,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 - 完善注释或文档
 
-**注意**：所有贡献的代码也将采用 AGPLv3 协议。
+**注意**：所有贡献的代码也将采用 Apache-2.0 协议。
 
 ## 🍁 特别致谢
 
@@ -638,77 +606,3 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 - Issues：https://github.com/Xuelin-Sherlyn/AkieGUI/issues
 
-> [!CAUTION]
-> ## ⚠️ 重要提醒（必读）
-> 
-> **AkieGUI 的开发者们不是外包团队，也不是免费劳动力，更不是免费客服。**
-> 
-> ### 如果你只是学习：
-> - ✅ 随便用，随便改
-> - ✅ 代码里注释写得很清楚
-> - ✅ 出bug自己修，别来找我
-> 
-> ### 如果你想用在产品里：
-> - ✅ 可以，**AGPLv3 允许免费商用**
-> - ✅ 但必须开源你的修改
-> - ✅ 必须保留版权声明
-> - ⚠️ **本项目为个人兴趣维护，不提供商业技术支持服务。如需商业合作或定制开发，请通过邮件联系，我们视时间和精力决定是否承接。**
-> - 回复可能很慢（毕竟主业不是干这个），急着要的请绕道。
-> 
-> ### 关于"背锅"：
-> AGPLv3 第15-16条写得明明白白：
-> - 代码按"原样"提供，**没有任何保证**
-> - 作者**不对任何损失负责**
-> - 用了出问题是你自己的事
-> 
-> **用了就是同意，不同意就别用。**
-> 
-> ## 🔧 关于 NDA 芯片的使用说明
-> 
-> AkieGUI 采用 AGPLv3 协议，原则上要求所有使用都必须开源。
-> 
-> ### 🎯 但我知道有些芯片受 NDA 保护
-> - 车规芯片、专用IC、未发布的新品
-> - 一旦涉及，**整个项目都不能公开**
-> 
-> ### 📢 作为作者，我的态度：
-> - ✅ **我不会主动追究 NDA 芯片上的使用**
-> - ✅ 你不需要开源 NDA 相关代码
-> 
-> ### ⚠️ 只有一个要求：**告诉我一声**
-> 发个邮件到 [xuelin-sherlyn@outlook.com](mailto:xuelin-sherlyn@outlook.com)，简单说：
-> - "我在用 AkieGUI，项目涉及 NDA 芯片"
-> - 不需要具体芯片型号，不需要项目细节
-> 
-> **我收到邮件就会标记：这个项目我知道，不追究。**
-> 
-> ### ⚠️ 为什么必须告知？
-> 因为其他贡献者可能追究，我需要帮你挡。
-> 
-> ### 🤝 给贡献者的建议：
-> 发现没开源的 NDA 项目，先查我有没有收到告知邮件。
-> 查不到再发 Issue，别直接举报。
-> 
-> **我们是一个社区，目标是让更多人学会嵌入式，不是为了互相举报。**
-> 
-> —— 雪琳Sherlyn
-
-## 📢 违规使用举报通道
-
-如果你发现有人在以下场景使用了 AkieGUI 但未遵守 AGPLv3：
-- B站/YouTube 视频
-- 开源项目
-- 培训机构
-- 商业产品
-
-请在本仓库提交 Issue，提供：
-1. 违规链接
-2. 证据截图
-3. 是否已提醒
-
-我们会：
-✅ 公开记录（给后来者警示）
-✅ 联系对方提醒
-✅ 必要时向平台投诉
-
-**保护开源，需要大家一起监督。**
