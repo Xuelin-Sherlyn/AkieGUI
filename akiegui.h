@@ -12,7 +12,7 @@
  * 
  * 用户程序只需 #include "akiegui.h"
  *
- * 许可证: AGPL v3 (看许可证文件)
+ * 许可证: Apache 2.0
  * 联系方式: xuelin-sherlyn@outlook.com
  * B站: https://space.bilibili.com/1815675515
  */

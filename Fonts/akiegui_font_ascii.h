@@ -4,3 +4,4 @@
 extern pFONT ASCII_8x16;
 extern pFONT ASCII_9x18;
 extern pFONT ASCII_10x20;
+extern pFONT ASCII_15x30;
