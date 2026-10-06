@@ -1,4 +1,4 @@
-/* ============= akiegui_color.h ============= */
+/* ============= akiegui_font.h ============= */
 /*
  * AkieGUI - 嵌入式极简图形库
  * Copyright (C) 2026 雪琳Sherlyn (Xuelin-Sherlyn)

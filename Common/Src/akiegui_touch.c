@@ -1,3 +1,14 @@
+/* ============= akiegui_touch.c ============= */
+/*
+ * AkieGUI - 嵌入式极简图形库
+ * Copyright (C) 2026 雪琳Sherlyn (Xuelin-Sherlyn)
+ *
+ * 触摸驱动部分
+ *
+ * 许可证: Apache 2.0
+ * 联系方式: xuelin-sherlyn@outlook.com
+ * B站: https://space.bilibili.com/1815675515
+ */
 #include "akiegui_touch.h"
 /*======== 把触摸取驱动的头文件在这引用 ========*/
 
