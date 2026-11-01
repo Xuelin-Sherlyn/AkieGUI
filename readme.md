@@ -121,7 +121,7 @@ AkieGUI 的每一行代码都来自实际项目中的痛点：
     |   │   │   └── akiegui_image.c
     |   │   └── Label/
     |   │   │   ├── akiegui_label.h
-    |   │   │   └── akiegui_image.c
+    |   │   │   └── akiegui_label.c
     |   │   └── Progress/
     |   │       ├── akiegui_progress.h
     |   │       └── akiegui_progress.c
