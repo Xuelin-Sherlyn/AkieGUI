@@ -11,7 +11,6 @@
  */
 #include "akiegui_widget.h"
 #include "akiegui_core.h"
-#include "usart.h"
 #include <string.h>
 
 #define MAX_WIDGETS 20
