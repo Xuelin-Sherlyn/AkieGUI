@@ -50,20 +50,31 @@ static void progress_draw(AkieGUI_Widget_T *widget, void *fb) {
                           priv->border_width, widget->h, priv->border_color);
     }
 
-    /* 百分比文字 */
+    /* 百分比文字：放不下时截断并加 ... */
     if (priv->show_percent && priv->font) {
         char buf[8];
+        char fitted[12];
         uint16_t percent = (uint16_t)((uint32_t)priv->value * 100 / priv->max);
         snprintf(buf, sizeof(buf), "%d%%", percent);
         uint16_t tw = akiegui_text_width(buf, priv->font);
         uint16_t th = priv->font->Height;
-        uint16_t tx = widget->x + (widget->w - tw) / 2;
-        uint16_t ty = widget->y + (widget->h - th) / 2;
-        akiegui_draw_string(fb, tx, ty, buf,
-                            priv->text_color,
-                            priv->bg_color,
-                            1,
-                            priv->font);
+        const char *text = buf;
+
+        if (th <= widget->h) {
+            if (tw > widget->w) {
+                tw = akiegui_text_ellipsis(fitted, sizeof(fitted), buf, widget->w, priv->font);
+                text = fitted;
+            }
+            if (tw > 0) {
+                uint16_t tx = widget->x + (widget->w - tw) / 2;
+                uint16_t ty = widget->y + (widget->h - th) / 2;
+                akiegui_draw_string(fb, tx, ty, text,
+                                    priv->text_color,
+                                    priv->bg_color,
+                                    1,
+                                    priv->font);
+            }
+        }
     }
 
     widget->dirty = 0;
