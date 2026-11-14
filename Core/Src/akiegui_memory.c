@@ -143,7 +143,7 @@ void* AkieGUI_MemAllocAlign(uint32_t size, uint32_t align) {
     
     /* 对齐计算 */
     uint8_t *data_ptr = (uint8_t*)curr + sizeof(AkieGUI_Mem_Block_T);
-    uint8_t *aligned_ptr = (uint8_t*)(((uint32_t)data_ptr + align - 1) & ~(align - 1));
+    uint8_t *aligned_ptr = (uint8_t*)(((uintptr_t)data_ptr + align - 1) & ~(align - 1));
     uint32_t offset = aligned_ptr - data_ptr;
     
     void *result = NULL;

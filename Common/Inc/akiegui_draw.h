@@ -72,4 +72,17 @@ void akiegui_draw_chinese_string(
 /* 计算字符串宽度 */
 uint16_t akiegui_text_width(const char *str, pFONT *font);
 
+/* 在 max_width 内生成 ASCII 省略号文本，返回实际宽度；0 表示连 "..." 都放不下。
+ * dst 至少为 strlen(src) + 4 字节。 */
+uint16_t akiegui_text_ellipsis(char *dst, uint16_t dst_size,
+                               const char *src, uint16_t max_width, pFONT *font);
+
+/* 中英混排的实际像素宽度 */
+uint16_t akiegui_text_width_mixed(const char *str, pFONT *chinese_font, pFONT *ascii_font);
+
+/* 中英混排的省略号版本 */
+uint16_t akiegui_text_ellipsis_mixed(char *dst, uint16_t dst_size,
+                                     const char *src, uint16_t max_width,
+                                     pFONT *chinese_font, pFONT *ascii_font);
+
 #endif

@@ -75,6 +75,7 @@ void akiegui_draw_char(
     pFONT *font
 ) {
     if (!font || !font->pTable || ch < 32 || ch > 126) return;
+    if (x >= g_akiegui.fb_width || y >= g_akiegui.fb_height) return;
     
     uint16_t fb_width = g_akiegui.fb_width;
     uint16_t offset = (ch - 32) * font->Sizes;
@@ -152,6 +153,7 @@ void akiegui_draw_chinese_char(
     pFONT *font                 /* 中文字体 */
 ){
     if (ch == NULL || font == NULL) return;
+    if (x >= g_akiegui.fb_width || y >= g_akiegui.fb_height) return;
     // 字符编码到字库索引的映射
     uint16_t char_index = 0;
     uint16_t fb_index = 0;
@@ -160,7 +162,7 @@ void akiegui_draw_chinese_char(
     while(1)
 	{		
 		// 通过对比数组中的汉字编码，定位字模地址
-		if ( *(font->pTable + (fb_index+1)*font->Sizes + 0)==*ch && *(font->pTable + (fb_index+1)*font->Sizes + 1)==*(ch+1) )	
+		if ( *(font->pTable + (fb_index+1)*font->Sizes + 0)==(uint8_t)*ch && *(font->pTable + (fb_index+1)*font->Sizes + 1)==(uint8_t)*(ch+1) )
 		{
 		  char_index=fb_index;	// 字模地址偏移
 		  break;
@@ -198,7 +200,7 @@ void akiegui_draw_chinese_char(
     while(1)
 	{		
 		// 通过对比数组中的汉字编码，定位字模地址
-		if ( *(font->pTable + (fb_index+1)*font->Sizes + 0)==*ch && *(font->pTable + (fb_index+1)*font->Sizes + 1)==*(ch+1) )	
+		if ( *(font->pTable + (fb_index+1)*font->Sizes + 0)==(uint8_t)*ch && *(font->pTable + (fb_index+1)*font->Sizes + 1)==(uint8_t)*(ch+1) )
 		{
 		  char_index=fb_index;	// 字模地址偏移
 		  break;
@@ -262,10 +264,10 @@ void akiegui_draw_string(
     pFONT *font
 ) {
     if (!str || !font) return;
-    
-    uint16_t cur_x = x;
-    while (*str) {
-        akiegui_draw_char(fb, cur_x, y, *str, color, bg_color, transparent, font);
+    if (x >= g_akiegui.fb_width || y >= g_akiegui.fb_height) return;
+    uint32_t cur_x = x;
+    while (*str && cur_x < g_akiegui.fb_width) {
+        akiegui_draw_char(fb, (uint16_t)cur_x, y, *str, color, bg_color, transparent, font);
         cur_x += font->Width;
         str++;
     }
@@ -293,17 +295,20 @@ void akiegui_draw_chinese_string(
     pFONT *chinese_font,
     pFONT *ascii_font
 ) {
-    uint16_t cur_x = x;
-    while (*str != '\0') {
+    if (!str || !chinese_font || !ascii_font) return;
+    if (x >= g_akiegui.fb_width || y >= g_akiegui.fb_height) return;
+
+    uint32_t cur_x = x;
+    while (*str != '\0' && cur_x < g_akiegui.fb_width) {
         if ((uint8_t)*str >= 0xA1 && (uint8_t)*str <= 0xF7) {
             // GB2312 中文字符
             if (*(str + 1) == '\0') break;
-            akiegui_draw_chinese_char(fb, cur_x, y, str, color, bg_color, transparent, chinese_font);
+            akiegui_draw_chinese_char(fb, (uint16_t)cur_x, y, str, color, bg_color, transparent, chinese_font);
             cur_x += chinese_font->Width;
             str += 2;
         } else if (*str >= 0x20 && *str <= 0x7E) {
             // ASCII
-            akiegui_draw_char(fb, cur_x, y, *str, color, bg_color, transparent, ascii_font);
+            akiegui_draw_char(fb, (uint16_t)cur_x, y, *str, color, bg_color, transparent, ascii_font);
             cur_x += ascii_font->Width;
             str++;
         } else {
@@ -316,4 +321,112 @@ void akiegui_draw_chinese_string(
 uint16_t akiegui_text_width(const char *str, pFONT *font) {
     if (!str || !font) return 0;
     return strlen(str) * font->Width;
+}
+
+/* 在 max_width 内生成 ASCII 省略号文本，返回实际宽度；0 表示连 "..." 都放不下 */
+uint16_t akiegui_text_ellipsis(char *dst, uint16_t dst_size,
+                               const char *src, uint16_t max_width, pFONT *font) {
+    if (!dst || dst_size < 5 || !src || !font || font->Width == 0) return 0;
+
+    const uint16_t len = (uint16_t)strlen(src);
+    const uint32_t full_w = (uint32_t)len * font->Width;
+
+    if (full_w <= max_width) {
+        uint16_t n = len;
+        if (n > dst_size - 1) n = dst_size - 1;
+        memcpy(dst, src, n);
+        dst[n] = '\0';
+        return (uint16_t)((uint32_t)n * font->Width);
+    }
+
+    const uint16_t ell_w = (uint16_t)(3u * font->Width);
+    if (max_width < ell_w) {
+        dst[0] = '\0';
+        return 0;
+    }
+
+    uint16_t n = (uint16_t)((max_width - ell_w) / font->Width);
+    if (n > len) n = len;
+    if (n > dst_size - 4) n = dst_size - 4;
+
+    memcpy(dst, src, n);
+    dst[n] = '.';
+    dst[n + 1] = '.';
+    dst[n + 2] = '.';
+    dst[n + 3] = '\0';
+
+    return (uint16_t)((uint32_t)(n + 3u) * font->Width);
+}
+
+/* 中英混排的实际像素宽度 */
+uint16_t akiegui_text_width_mixed(const char *str, pFONT *chinese_font, pFONT *ascii_font) {
+    if (!str) return 0;
+
+    uint32_t w = 0;
+    while (*str) {
+        if ((uint8_t)*str >= 0xA1 && (uint8_t)*str <= 0xF7 && str[1] != '\0') {
+            if (chinese_font) w += chinese_font->Width;
+            str += 2;
+        } else {
+            if (ascii_font) w += ascii_font->Width;
+            str++;
+        }
+        if (w > 0xFFFFu) return 0xFFFFu;
+    }
+    return (uint16_t)w;
+}
+
+/* 中英混排的省略号版本 */
+uint16_t akiegui_text_ellipsis_mixed(char *dst, uint16_t dst_size,
+                                     const char *src, uint16_t max_width,
+                                     pFONT *chinese_font, pFONT *ascii_font) {
+    if (!dst || dst_size < 5 || !src || !chinese_font || !ascii_font) return 0;
+
+    const uint16_t full_w = akiegui_text_width_mixed(src, chinese_font, ascii_font);
+    if (full_w <= max_width) {
+        size_t len = strlen(src);
+        if (len > (size_t)(dst_size - 1)) len = dst_size - 1;
+        memcpy(dst, src, len);
+        dst[len] = '\0';
+        return full_w;
+    }
+
+    const uint16_t ell_w = (uint16_t)(3u * ascii_font->Width);
+    if (max_width < ell_w) {
+        dst[0] = '\0';
+        return 0;
+    }
+
+    const uint16_t avail = (uint16_t)(max_width - ell_w);
+    uint16_t used = 0;
+    uint16_t out = 0;
+    const char *p = src;
+
+    while (*p) {
+        uint16_t cw;
+        uint8_t bytes;
+
+        if ((uint8_t)*p >= 0xA1 && (uint8_t)*p <= 0xF7 && p[1] != '\0') {
+            cw = chinese_font->Width;
+            bytes = 2;
+        } else {
+            cw = ascii_font->Width;
+            bytes = 1;
+        }
+
+        if ((uint32_t)used + cw > avail) break;
+        if ((uint32_t)out + bytes + 4u > dst_size) break;
+
+        memcpy(dst + out, p, bytes);
+        out = (uint16_t)(out + bytes);
+        used = (uint16_t)(used + cw);
+        p += bytes;
+    }
+
+    dst[out] = '.';
+    dst[out + 1] = '.';
+    dst[out + 2] = '.';
+    dst[out + 3] = '\0';
+
+    return (uint16_t)((uint32_t)used + ell_w);
 }

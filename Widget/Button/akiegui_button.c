@@ -52,14 +52,30 @@ static void button_draw(AkieGUI_Widget_T *widget, void *fb) {
                          widget->border_width, widget->h, widget->border_color);
     }
     
-    /* 绘制文字 - 居中 */
+    /* 绘制文字 - 居中；放不下时截断并加 ... */
     if (priv->text[0] != '\0' && priv->font) {
         uint16_t text_w = akiegui_text_width(priv->text, priv->font);
         uint16_t text_h = priv->font->Height;
+        const char *text = priv->text;
+        char fitted[sizeof(priv->text) + 4];
+
+        if (text_h > widget->h) {
+            widget->dirty = 0;
+            return;
+        }
+        if (text_w > widget->w) {
+            text_w = akiegui_text_ellipsis(fitted, sizeof(fitted), priv->text, widget->w, priv->font);
+            if (text_w == 0) {
+                widget->dirty = 0;
+                return;
+            }
+            text = fitted;
+        }
+
         uint16_t start_x = widget->x + (widget->w - text_w) / 2;
         uint16_t start_y = widget->y + (widget->h - text_h) / 2;
         
-        akiegui_draw_string(fb, start_x, start_y, priv->text,
+        akiegui_draw_string(fb, start_x, start_y, text,
                            priv->text_color, bg, 1, priv->font);
     }
     
