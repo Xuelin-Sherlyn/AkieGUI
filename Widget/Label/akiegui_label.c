@@ -210,7 +210,7 @@ AkieGUI_Widget_T* AkieGUI_Label_Create_Chinese(
     
     /* 计算标签尺寸（根据文字长度）*/
     // uint16_t text_len = text ? strlen(text) : 0;
-    uint16_t width = akiegui_text_width(text, ch_font) + 4;  /* 左右留2像素边 */
+    uint16_t width = akiegui_text_width_mixed(priv->text, ch_font, ascii_font) + 4;  /* 按真实混排宽度，左右各留2像素 */
     uint16_t height = ch_font->Height + 4;           /* 上下留2像素边 */
     
     /* 颜色转换 */
@@ -247,8 +247,11 @@ void AkieGUI_Label_SetText(AkieGUI_Widget_T *widget, const char *text) {
     priv->text[sizeof(priv->text) - 1] = '\0';
     
     /* 重新计算宽度（如果需要自动调整）*/
-    uint16_t text_len = strlen(text);
-    widget->w = text_len * priv->ascii_font->Width + 4;
+    if (priv->chinese_font && priv->ascii_font) {
+        widget->w = akiegui_text_width_mixed(priv->text, priv->chinese_font, priv->ascii_font) + 4;
+    } else {
+        widget->w = (uint16_t)(strlen(priv->text) * priv->ascii_font->Width + 4);
+    }
     
     widget->dirty = 1;
 }
@@ -266,8 +269,7 @@ void AkieGUI_Label_SetText_Chinese(AkieGUI_Widget_T *widget, const char *text) {
     priv->text[sizeof(priv->text) - 1] = '\0';
     
     /* 重新计算宽度（如果需要自动调整）*/
-    uint16_t text_len = strlen(text);
-    widget->w = text_len * priv->chinese_font->Width + 4;
+    widget->w = akiegui_text_width_mixed(priv->text, priv->chinese_font, priv->ascii_font) + 4;
     
     widget->dirty = 1;
 }
