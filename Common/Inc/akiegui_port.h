@@ -19,6 +19,7 @@
 #define __AKIEGUI_PORT_H__
 
 #include "akiegui_config.h"
+#include <stdint.h>
 
 /* ===== 架构检测与中断控制 ===== */
 #if defined(__ARM_ARCH_7EM__) || defined(__ARM_ARCH_7M__) || \
