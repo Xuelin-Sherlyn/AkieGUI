@@ -45,30 +45,14 @@ static void label_draw(AkieGUI_Widget_T *widget, void *fb) {
         akiegui_draw_rect(fb, widget->x, widget->y, widget->w, widget->h, priv->bg_color);
     }
     
-    /* 画文字 - 居中；放不下时截断并加 ... */
+    /* 画文字 - 居中 */
     if (priv->text[0] != '\0' && priv->ascii_font) {
         uint16_t text_w = akiegui_text_width(priv->text, priv->ascii_font);
         uint16_t text_h = priv->ascii_font->Height;
-        const char *text = priv->text;
-        char fitted[sizeof(priv->text) + 4];
-
-        if (text_h > widget->h) {
-            widget->dirty = 0;
-            return;
-        }
-        if (text_w > widget->w) {
-            text_w = akiegui_text_ellipsis(fitted, sizeof(fitted), priv->text, widget->w, priv->ascii_font);
-            if (text_w == 0) {
-                widget->dirty = 0;
-                return;
-            }
-            text = fitted;
-        }
-
         uint16_t start_x = widget->x + (widget->w - text_w) / 2;
         uint16_t start_y = widget->y + (widget->h - text_h) / 2;
 
-        akiegui_draw_string(fb, start_x, start_y, text,
+        akiegui_draw_string(fb, start_x, start_y, priv->text,
                        priv->text_color, priv->bg_color, 
                        priv->transparent, priv->ascii_font);
     }
@@ -88,36 +72,13 @@ static void label_draw_mixed(AkieGUI_Widget_T* label, void *fb) {
     if (!priv->transparent) {
         akiegui_draw_rect(fb, label->x, label->y, label->w, label->h, priv->bg_color);
     }
-    if (!priv->chinese_font || !priv->ascii_font) {
-        label->dirty = 0;
-        return;
-    }
+    const char* str = priv->text;
+    uint16_t tx = label->x + (label->w - strlen(priv->text) * priv->chinese_font->Width) / 2;
+    uint16_t ty = label->y + (label->h - priv->chinese_font->Height) / 2;
 
-    uint16_t text_w = akiegui_text_width_mixed(priv->text, priv->chinese_font, priv->ascii_font);
-    uint16_t text_h = priv->chinese_font->Height;
-    const char *text = priv->text;
-    char fitted[sizeof(priv->text) + 4];
-
-    if (text_h > label->h) {
-        label->dirty = 0;
-        return;
-    }
-    if (text_w > label->w) {
-        text_w = akiegui_text_ellipsis_mixed(fitted, sizeof(fitted), priv->text, label->w,
-                                             priv->chinese_font, priv->ascii_font);
-        if (text_w == 0) {
-            label->dirty = 0;
-            return;
-        }
-        text = fitted;
-    }
-
-    uint16_t tx = label->x + (label->w - text_w) / 2;
-    uint16_t ty = label->y + (label->h - text_h) / 2;
-
-    akiegui_draw_chinese_string(fb, tx, ty, text,
-        priv->text_color, priv->bg_color,
-        priv->transparent, priv->chinese_font,
+    akiegui_draw_chinese_string(fb, tx, ty, str, 
+        priv->text_color, priv->bg_color, 
+        priv->transparent, priv->chinese_font, 
         priv->ascii_font);
 
     label->dirty = 0;
