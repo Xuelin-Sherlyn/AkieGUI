@@ -57,7 +57,7 @@ void AkieGUI_BackupBackground(void) {
 */
 void AkieGUI_RestoreBackgroundArea(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
     uint32_t offset = (y * g_akiegui.fb_width + x) * (g_akiegui.fb_bpp / 8);
-    g_akiegui.send_region(x, y, w, h, g_backup_fb + offset);
+    AkieGUI_SendRegion(x, y, w, h, g_backup_fb + offset);
 }
 
 /**
