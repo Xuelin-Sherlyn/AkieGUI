@@ -50,12 +50,12 @@ typedef struct AkieGUI_Widget {
     uint8_t dirty;
     
     /* 回调 */
-    void (*on_click)(struct AkieGUI_Widget *self);
-    void (*on_release)(struct AkieGUI_Widget *self);
+    void (*on_click)(struct AkieGUI_Widget *);
+    void (*on_release)(struct AkieGUI_Widget *);
     void *user_data;
     
     /* 绘制函数 */
-    void (*draw)(struct AkieGUI_Widget *self, void *fb);
+    void (*draw)(struct AkieGUI_Widget *, void *fb);
     
     /* 私有数据 */
     void *priv;

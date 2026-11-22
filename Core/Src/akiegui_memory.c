@@ -97,7 +97,7 @@ void* AkieGUI_MemAllocAlign(uint32_t size, uint32_t align) {
   uint32_t primask;  /* 保存中断状态 */
 
     if (size == 0) return NULL;
-    if (align == 0 || (align & (align - 1)) != 0) {
+    if (align < AkieGUI_ALIGN || (align & (align - 1)) != 0) {
         align = AkieGUI_ALIGN;  /* 回退到默认 */
     }
 #if AkieGUI_USE_FREERTOS
@@ -122,15 +122,27 @@ void* AkieGUI_MemAllocAlign(uint32_t size, uint32_t align) {
     AkieGUI_ENTER_CRITICAL(primask);
     
     size = AkieGUI_ALIGN_UP(size, align);
-    uint32_t total_size = size + sizeof(AkieGUI_Mem_Block_T) + align;
-    
+
+    const uint32_t header_size = sizeof(AkieGUI_Mem_Block_T);
+    uint32_t padding = 0;
+
     AkieGUI_Mem_Block_T *prev = NULL;
     AkieGUI_Mem_Block_T *curr = g_mem.free_list;
-    
+
     /* 遍历空闲链表 */
     while (curr) {
-        if (!curr->used && curr->size >= total_size) {
-            break;
+        if (!curr->used) {
+            uintptr_t block_data = (uintptr_t)curr + header_size;
+            uintptr_t aligned_data = AkieGUI_ALIGN_UP(block_data, align);
+            padding = (uint32_t)(aligned_data - block_data);
+
+            if (padding != 0 && padding < header_size) {
+                uint32_t missing = header_size - padding;
+                aligned_data += AkieGUI_ALIGN_UP(missing, align);
+                padding = (uint32_t)(aligned_data - block_data);
+            }
+
+            if (curr->size >= padding + size) break;
         }
         prev = curr;
         curr = curr->next;
@@ -141,64 +153,39 @@ void* AkieGUI_MemAllocAlign(uint32_t size, uint32_t align) {
         return NULL;
     }
     
-    /* 对齐计算 */
-    uint8_t *data_ptr = (uint8_t*)curr + sizeof(AkieGUI_Mem_Block_T);
-    uint8_t *aligned_ptr = (uint8_t*)(((uintptr_t)data_ptr + align - 1) & ~(align - 1));
-    uint32_t offset = aligned_ptr - data_ptr;
-    
-    void *result = NULL;
-    
-    if (offset > 0) {
-        /* 需要对齐填充，创建新块 */
-        AkieGUI_Mem_Block_T *new_block = 
-            (AkieGUI_Mem_Block_T*)(aligned_ptr - sizeof(AkieGUI_Mem_Block_T));
-        new_block->size = size;
-        new_block->used = 1;
-        new_block->magic = 0xFEEDBEEF;
-        new_block->next = NULL;
-        
-        /* 调整原空闲块 */
-        curr->size = aligned_ptr - (uint8_t*)curr - sizeof(AkieGUI_Mem_Block_T) * 2;
-        curr->used = 0;
-        
-        g_mem.free_size -= (size + sizeof(AkieGUI_Mem_Block_T));
-        g_mem.block_count++;
-        
-        result = (void*)(new_block + 1);
+    AkieGUI_Mem_Block_T *next_free = curr->next;
+    uint8_t *region_end = (uint8_t*)curr + header_size + curr->size;
+    uint8_t *data_ptr = (uint8_t*)curr + header_size + padding;
+    AkieGUI_Mem_Block_T *used_block = (AkieGUI_Mem_Block_T*)(data_ptr - header_size);
+    uint32_t consumed_size = size + header_size + padding;
+
+    used_block->size = size;
+    used_block->used = 1;
+    used_block->magic = 0xFEEDBEEF;
+    used_block->next = NULL;
+
+    uint8_t *rest_data = data_ptr + size;
+    if ((uint32_t)(region_end - rest_data) >= header_size + AkieGUI_ALIGN) {
+        AkieGUI_Mem_Block_T *rest_block = (AkieGUI_Mem_Block_T*)rest_data;
+        rest_block->size = (uint32_t)(region_end - rest_data) - header_size;
+        rest_block->used = 0;
+        rest_block->magic = 0xDEADBEEF;
+        rest_block->next = next_free;
+
+        if (prev) prev->next = rest_block;
+        else g_mem.free_list = rest_block;
     } else {
-        /* 直接使用当前块 */
-        curr->used = 1;
-        curr->size = size;
-        curr->magic = 0xFEEDBEEF;
-        
-        /* 如果剩余空间足够，分割内存 */
-        if (curr->size > size + sizeof(AkieGUI_Mem_Block_T) + AkieGUI_ALIGN) {
-            AkieGUI_Mem_Block_T *next_block = 
-                (AkieGUI_Mem_Block_T*)((uint8_t*)curr + sizeof(AkieGUI_Mem_Block_T) + size);
-            next_block->next = curr->next;
-            next_block->size = curr->size - size - sizeof(AkieGUI_Mem_Block_T);
-            next_block->used = 0;
-            next_block->magic = 0xDEADBEEF;
-            
-            if (prev) {
-                prev->next = next_block;
-            } else {
-                g_mem.free_list = next_block;
-            }
-            
-            curr->next = NULL;
-            curr->size = size;
-        }
-        
-        g_mem.free_size -= (curr->size + sizeof(AkieGUI_Mem_Block_T));
-        g_mem.block_count++;
-        
-        result = (void*)(curr + 1);
+        consumed_size = (uint32_t)(region_end - (uint8_t*)curr);
+        if (prev) prev->next = next_free;
+        else g_mem.free_list = next_free;
     }
-    
+
+    g_mem.free_size -= consumed_size;
+    g_mem.block_count++;
+
     /* ===== 退出临界区 ===== */
     AkieGUI_EXIT_CRITICAL(primask);
-    return result;
+    return data_ptr;
 #endif
 }
 

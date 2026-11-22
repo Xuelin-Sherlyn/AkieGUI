@@ -19,6 +19,10 @@
 #ifndef __AKIEGUI_H__
 #define __AKIEGUI_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* 单头文件包含全部 */
 #include "akiegui_config.h"
 #include "akiegui_memory.h"
@@ -30,6 +34,10 @@
 #include "akiegui_image.h"
 #include "akiegui_label.h"
 #include "akiegui_progress.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 /* 版本信息 */
 #define AKIEGUI_VERSION_MAJOR    0
