@@ -24,7 +24,7 @@
 #ifndef AkieGUI_ALIGN
 #define AkieGUI_ALIGN 16
 #endif
-#define AkieGUI_ALIGN_UP(x, align) (((x) + (align) - 1) & ~((align) - 1))
+#define AkieGUI_ALIGN_UP(x, align) (((x) + (align) - 1) & ~((uintptr_t)(align) - 1))
 
 /* 内存块头 */
 typedef struct AkieGUI_Mem_Block {

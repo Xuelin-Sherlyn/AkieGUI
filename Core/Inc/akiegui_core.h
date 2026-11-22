@@ -139,7 +139,7 @@ static inline void AkieGUI_SwapBuffer(void) {
  * @brief 提交整帧到屏幕
  */
 static inline int AkieGUI_Commit(void) {
-    AkieGUI_SendFrame(g_akiegui.draw_fb, g_akiegui.fb_size);
+    AkieGUI_SendFrame((uint8_t*)g_akiegui.draw_fb, g_akiegui.fb_size);
     return 0;
 }
 
@@ -156,7 +156,7 @@ static inline int AkieGUI_CommitRegion(uint16_t x, uint16_t y, uint16_t w, uint1
     uint32_t offset = (y * g_akiegui.fb_width + x) * bytes_per_pixel;
 
     // 一次发送整个矩形区域
-    AkieGUI_SendRegion(x, y, w, h, g_akiegui.draw_fb + offset);
+    AkieGUI_SendRegion(x, y, w, h, (uint8_t*)g_akiegui.draw_fb + offset);
     AkieGUI_WaitTE();
 
     return 0;
